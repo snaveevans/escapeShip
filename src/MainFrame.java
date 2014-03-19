@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.awt.event.ActionListener;
 
@@ -29,10 +31,12 @@ public class MainFrame extends JFrame implements Runnable, ActionListener{
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Escape Ship");
+        setFocusable(true);
 
         gameLoop = new GameLoop(dimension);
         drawingSurface = new DrawingSurface(dimension);
         add(drawingSurface);
+        addKeyListener(new KeyCatcher());
     }
 
     @Override
@@ -40,5 +44,42 @@ public class MainFrame extends JFrame implements Runnable, ActionListener{
         ArrayList[] temp = gameLoop.update();
         drawingSurface.change(temp);
         drawingSurface.repaint();
+    }
+
+    /*--------------------------------------------------------------------------------
+                                Keyboard Listener
+    --------------------------------------------------------------------------------*/
+    class KeyCatcher implements KeyListener{
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if(e.getKeyCode()==KeyEvent.VK_A){//start moving left
+                gameLoop.moveLeft(true);
+                System.out.println("A");
+            }
+            if(e.getKeyCode()==KeyEvent.VK_D){//start moving right
+                gameLoop.moveRight(true);
+                System.out.println("D");
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            if(e.getKeyCode()==KeyEvent.VK_A){//stop moving left
+                gameLoop.moveLeft(false);
+            }
+            if(e.getKeyCode()==KeyEvent.VK_D){//stop moving right
+                gameLoop.moveRight(false);
+            }
+            if(e.getKeyCode()==KeyEvent.VK_SPACE){
+                gameLoop.fireLaser();
+                System.out.println("Space");
+            }
+        }
     }
 }

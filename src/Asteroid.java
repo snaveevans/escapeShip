@@ -31,11 +31,6 @@ public class Asteroid extends GameObjects {
     }
 
     @Override
-    protected void move() {
-
-    }
-
-    @Override
     protected void blowUp() {
 
     }

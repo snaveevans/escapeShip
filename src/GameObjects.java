@@ -4,8 +4,8 @@
 public abstract class GameObjects  {
     protected double xCoordinate, yCoordinate;
     protected double xSpeed, ySpeed;
-
-    protected abstract void move();
+    static public final int LEFT = 0;
+    static public final int RIGHT = 1;
 
     protected abstract void blowUp();
 

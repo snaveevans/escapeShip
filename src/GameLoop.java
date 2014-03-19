@@ -47,6 +47,20 @@ public class GameLoop {
         asteroidList.add(asteroid);
     }
 
+    public void moveLeft(boolean isMoving){
+        escapeShip.move(isMoving, GameObjects.LEFT);
+    }
+
+    public void moveRight(boolean isMoving){
+        escapeShip.move(isMoving, GameObjects.RIGHT);
+    }
+
+    public void fireLaser(){
+        Laser temp[] =escapeShip.fireLaser();
+        laserList.add(temp[0]);
+        laserList.add(temp[1]);
+    }
+
     public ArrayList[] update(){
 
         if(asteroidWait == 0 && asteroidList.size() < 10+level){//wait around 1-2 and there are already several asteroids
@@ -56,21 +70,8 @@ public class GameLoop {
 
         asteroidWait--;
 
-        Iterator<Asteroid> it = asteroidList.iterator();
-        while(it.hasNext()){
-            Asteroid asteroid = it.next();
-            asteroid.update();
-            if(asteroid.offScreen(dimension)){
-                it.remove();
-            }
-        }
-//        for(Asteroid asteroidObject: asteroidList){
-//            asteroidObject.update();
-//        }
+        Collider.remover(asteroidList,laserList,escapeShip,dimension);
 
-        for(Laser laserObject: laserList){
-            laserObject.update();
-        }
         escapeShip.update();
 
         ArrayList<EscapeShip> temp = new ArrayList<EscapeShip>();

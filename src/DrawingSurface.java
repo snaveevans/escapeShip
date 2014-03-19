@@ -56,6 +56,6 @@ public class DrawingSurface extends JPanel{
 
     private void drawEscapeShip(Graphics g, EscapeShip escapeShip){
         g.setColor(Color.green);
-        g.drawRect((int)escapeShip.xCoordinate,(int)escapeShip.yCoordinate,escapeShip.size,escapeShip.size);
+        g.drawRect((int)escapeShip.xCoordinate-escapeShip.size/2,(int)escapeShip.yCoordinate,escapeShip.size,escapeShip.size);
     }
 }
