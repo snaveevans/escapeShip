@@ -39,19 +39,16 @@ public class DrawingSurface extends JPanel{
         laserList = gameObjects[1];
         ArrayList<EscapeShip> escapeShipList = gameObjects[2];
         escapeShip = escapeShipList.get(0);
-
-        //System.out.println(asteroidList);
     }
 
     private void drawAsteroid(Graphics g, Asteroid asteroid){
-        //System.out.println("Asteroid Draw");
         g.setColor(Color.black);
         g.drawRect((int)asteroid.xCoordinate,(int)asteroid.yCoordinate,asteroid.size,asteroid.size);
     }
 
     private void drawLaser(Graphics g, Laser laser){
         g.setColor(Color.red);
-        g.drawRect((int)laser.xCoordinate,(int)laser.yCoordinate,1,5);
+        g.drawRect((int)laser.xCoordinate,(int)laser.yCoordinate,1,6);
     }
 
     private void drawEscapeShip(Graphics g, EscapeShip escapeShip){
