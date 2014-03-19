@@ -14,6 +14,8 @@ public class GameLoop {
     private ArrayList<Asteroid> asteroidList;
     private EscapeShip escapeShip;
     private Dimension dimension;
+    private double waitMin = .5;
+    private double waitMax = 1;
 
     public GameLoop(Dimension dimension){
        this.dimension = dimension;
@@ -47,8 +49,8 @@ public class GameLoop {
 
     public ArrayList[] update(){
 
-        if(asteroidWait == 0 && asteroidList.size() < 10+level){//wait around 2-3 and there are already several asteroids
-            asteroidWait = (int)(60*(2+(Math.random()*((3-2)+1))));
+        if(asteroidWait == 0 && asteroidList.size() < 10+level){//wait around 1-2 and there are already several asteroids
+            asteroidWait = (int)(60*(waitMin+(Math.random()*((waitMax-waitMin)+1))));
             throwAsteroid();
         }
 
@@ -57,13 +59,14 @@ public class GameLoop {
         Iterator<Asteroid> it = asteroidList.iterator();
         while(it.hasNext()){
             Asteroid asteroid = it.next();
-            if(asteroid.offScreen((int)dimension.getHeight())){
+            asteroid.update();
+            if(asteroid.offScreen(dimension)){
                 it.remove();
             }
         }
-        for(Asteroid asteroidObject: asteroidList){
-            asteroidObject.update();
-        }
+//        for(Asteroid asteroidObject: asteroidList){
+//            asteroidObject.update();
+//        }
 
         for(Laser laserObject: laserList){
             laserObject.update();

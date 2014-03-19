@@ -40,7 +40,7 @@ public class DrawingSurface extends JPanel{
         ArrayList<EscapeShip> escapeShipList = gameObjects[2];
         escapeShip = escapeShipList.get(0);
 
-        //System.out.println("DrawingSurface Repaint");
+        //System.out.println(asteroidList);
     }
 
     private void drawAsteroid(Graphics g, Asteroid asteroid){

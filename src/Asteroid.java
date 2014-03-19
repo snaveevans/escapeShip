@@ -6,6 +6,10 @@ import java.awt.*;
 public class Asteroid extends GameObjects {
 
     protected int size;
+    static private double speedMinX = .05;
+    static private double speedMaxX = .25;
+    static private double speedMinY = .8;
+    static private double speedMaxY = 1.2;
 
     public Asteroid(Dimension dimension){
         System.out.println("Asteroid Contructor");
@@ -14,13 +18,15 @@ public class Asteroid extends GameObjects {
 
         size = 10;
 
-        ySpeed = 1;
+        ySpeed = (speedMinY+(Math.random()*((speedMaxY-speedMinY)+1)));
+
+        xSpeed = (speedMinX+(Math.random()*((speedMaxX-speedMinX)+1)));
 
         if(((int)(Math.random()*10)%2)==1){
-            xSpeed = -.25;
+            xSpeed *= -1;
         }
         else{
-            xSpeed =.25;
+            xSpeed *= 1;
         }
     }
 
@@ -38,7 +44,7 @@ public class Asteroid extends GameObjects {
     public void update() {
         yCoordinate = yCoordinate + ySpeed;
 
-        //xCoordinate = xCoordinate + xSpeed;
+        xCoordinate = xCoordinate + xSpeed;
     }
 
     @Override
@@ -46,10 +52,10 @@ public class Asteroid extends GameObjects {
 
     }
 
-    public boolean offScreen(int height) {
-        if (xCoordinate < -20)
+    public boolean offScreen(Dimension dimension) {
+        if (xCoordinate < -20 || xCoordinate > dimension.getWidth()+20)
             return true;
-        if (yCoordinate > height + 20)
+        if (yCoordinate > dimension.getHeight() + 20)
             return true;
 
         return false;
