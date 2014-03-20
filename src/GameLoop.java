@@ -18,7 +18,9 @@ public class GameLoop {
     private Dimension dimension;
     private double waitMin = .05;
     private double waitMax = .1;
-    protected boolean pause;
+    private boolean pause;
+    private boolean gameOver;
+
 
     public GameLoop(Dimension dimension){
        this.dimension = dimension;
@@ -29,6 +31,7 @@ public class GameLoop {
     }
 
     public void start(){
+        gameOver = false;
         distanceTillNextLevel = 1000;
         previousDistanceTillNextLevel = 0;
         level = 1;
@@ -36,14 +39,20 @@ public class GameLoop {
         laserList = new ArrayList<Laser>();
         asteroidList = new ArrayList<Asteroid>();
         pause = false;
+        Laser.resetSpeedModifier();
+        Asteroid.resetSpeedModifier();
         pause();
     }
 
     public void pause(){
-        if(!pause)//if it isn't paused, pause it
+        if(!pause && !gameOver)//if it isn't paused, pause it, the game will not continue if it is gameOver
             pause = true;
-        else//if it is paused unpause it
+        else if(pause && !gameOver)//if it is paused unpause it, the game will not continue if it is gameOver
             pause = false;
+    }
+
+    public boolean getPause(){
+        return pause;
     }
 
     public void restart(){
@@ -51,6 +60,11 @@ public class GameLoop {
             start();
             escapeShip.startingPosition();
         }
+    }
+
+    public void gameOver(){
+        gameOver = true;
+        pause = true;
     }
 
     public void throwAsteroid(){
@@ -96,7 +110,8 @@ public class GameLoop {
 
             asteroidWait--;
 
-            Collider.remover(asteroidList,laserList,escapeShip,dimension);
+            if(Collider.remover(asteroidList,laserList,escapeShip,dimension))
+                gameOver();
 
             //check to up level
             if(escapeShip.getDistanceTraveled()-(previousDistanceTillNextLevel) > distanceTillNextLevel){

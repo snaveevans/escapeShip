@@ -8,7 +8,8 @@ public class EscapeShip extends GameObjects {
     //ship is 1/32 of the screen
     private double distanceTraveled;
     private int laserBatterAmmo;
-    private int rechargeRate;//divide by 60 to get seconds
+    private int rechargeRate;
+    public static final int RECHARGEMAX = 90;//divide by 60 to get seconds
     private  Dimension dimension;
     protected int size;
     private boolean moveLeft;
@@ -29,7 +30,7 @@ public class EscapeShip extends GameObjects {
         travelSpeed = 1;
         distanceTraveled = 0;
         laserBatterAmmo = 5;
-        rechargeRate = 90;
+        rechargeRate = RECHARGEMAX;
 
         yCoordinate = dimension.getHeight() * 14.5/16;
         xCoordinate = (dimension.getWidth() / 2) - size/2;
@@ -102,7 +103,7 @@ public class EscapeShip extends GameObjects {
         if(laserBatterAmmo != 5){
             rechargeRate--;
             if(rechargeRate==0){
-                rechargeRate = 120;
+                rechargeRate = RECHARGEMAX;
                 laserBatterAmmo++;
             }
         }
@@ -114,6 +115,10 @@ public class EscapeShip extends GameObjects {
 
     public int getRechargeRate(){
         return rechargeRate;
+    }
+
+    public int getRechargeMax(){
+        return RECHARGEMAX;
     }
 
     public double getDistanceTraveled(){

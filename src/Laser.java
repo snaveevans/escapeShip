@@ -5,7 +5,8 @@ import java.awt.*;
  */
 public class Laser extends GameObjects {
 
-    private static double ySpeed;
+    static private double ySpeed;
+    static private double speedModifier = 1;
 
     public Laser(double shipX, double shipY, int side, Dimension dimension){
         //laser is +/- 1/64 from the ship
@@ -16,7 +17,7 @@ public class Laser extends GameObjects {
         else{//uses addition
             xCoordinate = (int)(shipX + (dimension.getWidth() * 1/64));
         }
-        ySpeed = 2.916666666666667;
+        ySpeed = 2.916666666666667*speedModifier;
     }
 
     public Laser returnLaser(){
@@ -34,7 +35,10 @@ public class Laser extends GameObjects {
     }
 
     public static void updateSpeed(double speedIncrease) {
-        ySpeed *= speedIncrease;
+        speedModifier *= speedIncrease;
+    }
+    public static void resetSpeedModifier(){
+        speedModifier = 1;
     }
 
     public boolean offScreen() {

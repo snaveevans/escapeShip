@@ -35,7 +35,10 @@ public class Asteroid extends GameObjects {
         }
 
         ySpeed *= speedModifier;
-        xSpeed *= speedModifier;
+    }
+
+    public static void resetSpeedModifier(){
+        speedModifier = 1;
     }
 
     @Override

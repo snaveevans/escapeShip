@@ -44,7 +44,7 @@ public class DrawingSurface extends JPanel{
         asteroidList = gameLoop.asteroidList;
         laserList = gameLoop.laserList;
         escapeShip = gameLoop.escapeShip;
-        pause = gameLoop.pause;
+        pause = gameLoop.getPause();
         level = gameLoop.getLevel();
     }
 
@@ -79,7 +79,8 @@ public class DrawingSurface extends JPanel{
             x += 5;
             g.drawRect((int)dimension.getWidth()-x,5,1,7);
         }
-        g.drawRect((int)dimension.getWidth()-7,1,-1*(120-1*escapeShip.getRechargeRate()),2);
+        g.drawRect((int)dimension.getWidth()-9-escapeShip.getRechargeMax()+escapeShip.getRechargeRate(),1,escapeShip.getRechargeMax()-escapeShip.getRechargeRate(),1);
+        //System.out.println(escapeShip.getRechargeRate());
 
     }
 
