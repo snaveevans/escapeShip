@@ -54,7 +54,7 @@ public class Asteroid extends GameObjects {
     }
 
     public static void updateSpeed(double speedIncrease) {
-        speedModifier *= speedIncrease;
+        speedModifier = speedIncrease;
     }
 
     public boolean offScreen(Dimension dimension) {

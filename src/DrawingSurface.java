@@ -13,6 +13,7 @@ public class DrawingSurface extends JPanel{
     private EscapeShip escapeShip;
     private boolean pause;
     private int level;
+    private boolean gameOver;
 
     protected void paintComponent(Graphics g){
         //System.out.println("paintComponent");
@@ -46,6 +47,7 @@ public class DrawingSurface extends JPanel{
         escapeShip = gameLoop.escapeShip;
         pause = gameLoop.getPause();
         level = gameLoop.getLevel();
+        gameOver = gameLoop.getGameOver();
     }
 
     private void drawAsteroid(Graphics g, Asteroid asteroid){
@@ -65,7 +67,10 @@ public class DrawingSurface extends JPanel{
 
     private void drawPause(Graphics g){
         g.setColor(Color.black);
-        g.drawString("Paused: Press 'P' to continue or 'R' to Restart",((int)dimension.getWidth()/2)-135,(int)dimension.getWidth()/2);
+        if(gameOver)
+            g.drawString("Game Over: press 'R' to start a new game",((int)dimension.getWidth()/2)-130,(int)dimension.getWidth()/2);
+        else
+            g.drawString("Paused: Press 'P' to continue or 'R' to Restart",((int)dimension.getWidth()/2)-135,(int)dimension.getWidth()/2);
         //g.drawString("Press 'R' to restart",((int)dimension.getWidth()/2)-40,(int)dimension.getWidth()/2+20);
     }
 

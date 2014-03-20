@@ -17,7 +17,7 @@ public class Laser extends GameObjects {
         else{//uses addition
             xCoordinate = (int)(shipX + (dimension.getWidth() * 1/64));
         }
-        ySpeed = 2.916666666666667*speedModifier;
+        ySpeed = 2.916666666666667*1.5;
     }
 
     public Laser returnLaser(){

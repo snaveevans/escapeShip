@@ -16,8 +16,8 @@ public class GameLoop {
     protected ArrayList<Asteroid> asteroidList;
     protected EscapeShip escapeShip;
     private Dimension dimension;
-    private double waitMin = .05;
-    private double waitMax = .1;
+    private double waitMin = .01;
+    private double waitMax = .04;
     private boolean pause;
     private boolean gameOver;
 
@@ -67,6 +67,10 @@ public class GameLoop {
         pause = true;
     }
 
+    public boolean getGameOver(){
+        return gameOver;
+    }
+
     public void throwAsteroid(){
         Asteroid asteroid = new Asteroid(dimension);
         asteroidList.add(asteroid);
@@ -90,16 +94,23 @@ public class GameLoop {
 
     private void increaseLevel(){
         level++;
-        gameSpeed *= 1.06;
+        gameSpeed = (Math.log(level)/2)+1;
 
         Asteroid.updateSpeed(gameSpeed);
 
         Laser.updateSpeed(gameSpeed);
 
-        escapeShip.updateSpeed(gameSpeed);
+        EscapeShip.updateSpeed(gameSpeed);
     }
 
     public GameLoop update(){
+
+        /*------------------------------------------------------------------
+                                Rework Asteroid thrower
+                        * Should scale with time
+                        * As level gets higher frequency should increase
+                        * no limit to number of asteroids
+        ------------------------------------------------------------------*/
 
         if(!pause){
             if(asteroidWait <= 0 && asteroidList.size() < 10+level){//wait around 1-2 and there are already several asteroids
