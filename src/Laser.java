@@ -5,6 +5,8 @@ import java.awt.*;
  */
 public class Laser extends GameObjects {
 
+    private static double ySpeed;
+
     public Laser(double shipX, double shipY, int side, Dimension dimension){
         //laser is +/- 1/64 from the ship
         yCoordinate = shipY - 1; //just 1 pixel above the ship
@@ -14,7 +16,6 @@ public class Laser extends GameObjects {
         else{//uses addition
             xCoordinate = (int)(shipX + (dimension.getWidth() * 1/64));
         }
-        xSpeed = 0;
         ySpeed = 2.916666666666667;
     }
 
@@ -32,9 +33,8 @@ public class Laser extends GameObjects {
         yCoordinate -= ySpeed;
     }
 
-    @Override
-    public void updateSpeed(int speedIncrease) {
-
+    public static void updateSpeed(double speedIncrease) {
+        ySpeed *= speedIncrease;
     }
 
     public boolean offScreen() {

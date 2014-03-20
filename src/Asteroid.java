@@ -7,12 +7,17 @@ public class Asteroid extends GameObjects {
 
     protected int size;
     static private double speedMinX = .05;
-    static private double speedMaxX = .25;
     static private double speedMinY = .8;
+
+    static private double speedMaxX = .25;
     static private double speedMaxY = 1.2;
 
+    static private double speedModifier = 1;
+
+    private double xSpeed;
+    private double ySpeed;
+
     public Asteroid(Dimension dimension){
-        System.out.println("Asteroid Contructor");
         xCoordinate = (Math.random()*((dimension.getWidth()/2-0)+ dimension.getWidth()/2));
         yCoordinate = 1;
 
@@ -28,6 +33,9 @@ public class Asteroid extends GameObjects {
         else{
             xSpeed *= 1;
         }
+
+        ySpeed *= speedModifier;
+        xSpeed *= speedModifier;
     }
 
     @Override
@@ -42,9 +50,8 @@ public class Asteroid extends GameObjects {
         xCoordinate = xCoordinate + xSpeed;
     }
 
-    @Override
-    public void updateSpeed(int speedIncrease) {
-
+    public static void updateSpeed(double speedIncrease) {
+        speedModifier *= speedIncrease;
     }
 
     public boolean offScreen(Dimension dimension) {

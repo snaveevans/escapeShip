@@ -7,39 +7,50 @@ import java.util.Iterator;
  */
 public class GameLoop {
 
+    private int distanceTillNextLevel;
+    private int previousDistanceTillNextLevel;
     private int level;
-    private int gameSpeed;
+    private double gameSpeed;
     private int asteroidWait = 0;
-    private ArrayList<Laser> laserList;
-    private ArrayList<Asteroid> asteroidList;
-    private EscapeShip escapeShip;
+    protected ArrayList<Laser> laserList;
+    protected ArrayList<Asteroid> asteroidList;
+    protected EscapeShip escapeShip;
     private Dimension dimension;
-    private double waitMin = .5;
-    private double waitMax = 1;
+    private double waitMin = .05;
+    private double waitMax = .1;
+    protected boolean pause;
 
     public GameLoop(Dimension dimension){
        this.dimension = dimension;
-        System.out.println("Gameloop Contructor");
-        escapeShip = new EscapeShip(this.dimension);
+       escapeShip = new EscapeShip(this.dimension);
 
-        start();
+       start();
 
     }
 
     public void start(){
+        distanceTillNextLevel = 1000;
+        previousDistanceTillNextLevel = 0;
         level = 1;
         gameSpeed = 1;
         laserList = new ArrayList<Laser>();
         asteroidList = new ArrayList<Asteroid>();
-        System.out.println("Gameloop start");
+        pause = false;
+        pause();
     }
 
     public void pause(){
-
+        if(!pause)//if it isn't paused, pause it
+            pause = true;
+        else//if it is paused unpause it
+            pause = false;
     }
 
     public void restart(){
-
+        if(pause){//if the game is paused restart it
+            start();
+            escapeShip.startingPosition();
+        }
     }
 
     public void throwAsteroid(){
@@ -56,28 +67,52 @@ public class GameLoop {
     }
 
     public void fireLaser(){
-        Laser temp[] =escapeShip.fireLaser();
-        laserList.add(temp[0]);
-        laserList.add(temp[1]);
+        if(escapeShip.canFire()){
+            Laser temp[] =escapeShip.fireLaser();
+            laserList.add(temp[0]);
+            laserList.add(temp[1]);
+        }
     }
 
-    public ArrayList[] update(){
+    private void increaseLevel(){
+        level++;
+        gameSpeed *= 1.06;
 
-        if(asteroidWait == 0 && asteroidList.size() < 10+level){//wait around 1-2 and there are already several asteroids
-            asteroidWait = (int)(60*(waitMin+(Math.random()*((waitMax-waitMin)+1))));
-            throwAsteroid();
+        Asteroid.updateSpeed(gameSpeed);
+
+        Laser.updateSpeed(gameSpeed);
+
+        escapeShip.updateSpeed(gameSpeed);
+    }
+
+    public GameLoop update(){
+
+        if(!pause){
+            if(asteroidWait <= 0 && asteroidList.size() < 10+level){//wait around 1-2 and there are already several asteroids
+                asteroidWait = (int)(60*(waitMin+(Math.random()*((waitMax-waitMin)+1))));
+                throwAsteroid();
+                //System.out.println(asteroidWait);
+            }
+
+            asteroidWait--;
+
+            Collider.remover(asteroidList,laserList,escapeShip,dimension);
+
+            //check to up level
+            if(escapeShip.getDistanceTraveled()-(previousDistanceTillNextLevel) > distanceTillNextLevel){
+                previousDistanceTillNextLevel = distanceTillNextLevel;
+                distanceTillNextLevel += 250;
+                increaseLevel();
+            }
+
+            escapeShip.update();
         }
 
-        asteroidWait--;
+        return this;
+    }
 
-        Collider.remover(asteroidList,laserList,escapeShip,dimension);
-
-        escapeShip.update();
-
-        ArrayList<EscapeShip> temp = new ArrayList<EscapeShip>();
-        temp.add(escapeShip);
-
-        return new ArrayList[]{asteroidList,laserList,temp};
+    public int getLevel(){
+        return level;
     }
 
 }

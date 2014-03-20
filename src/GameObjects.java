@@ -3,7 +3,6 @@
  */
 public abstract class GameObjects  {
     protected double xCoordinate, yCoordinate;
-    protected double xSpeed, ySpeed;
     static public final int LEFT = 0;
     static public final int RIGHT = 1;
 
@@ -11,6 +10,6 @@ public abstract class GameObjects  {
 
     public abstract void update();
 
-    public abstract void updateSpeed(int speedIncrease);
+    public static void updateSpeed(double speedIncrease){};
 
 }

@@ -41,8 +41,8 @@ public class MainFrame extends JFrame implements Runnable, ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        ArrayList[] temp = gameLoop.update();
-        drawingSurface.change(temp);
+        //ArrayList[] temp = gameLoop.update();
+        drawingSurface.change(gameLoop.update());
         drawingSurface.repaint();
     }
 
@@ -60,11 +60,9 @@ public class MainFrame extends JFrame implements Runnable, ActionListener{
         public void keyPressed(KeyEvent e) {
             if(e.getKeyCode()==KeyEvent.VK_A){//start moving left
                 gameLoop.moveLeft(true);
-                System.out.println("A");
             }
             if(e.getKeyCode()==KeyEvent.VK_D){//start moving right
                 gameLoop.moveRight(true);
-                System.out.println("D");
             }
         }
 
@@ -78,7 +76,12 @@ public class MainFrame extends JFrame implements Runnable, ActionListener{
             }
             if(e.getKeyCode()==KeyEvent.VK_SPACE){
                 gameLoop.fireLaser();
-                System.out.println("Space");
+            }
+            if(e.getKeyCode()==KeyEvent.VK_P){
+                gameLoop.pause();
+            }
+            if(e.getKeyCode()==KeyEvent.VK_R){
+                gameLoop.restart();
             }
         }
     }

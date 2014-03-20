@@ -6,22 +6,30 @@ import java.awt.*;
 public class EscapeShip extends GameObjects {
 
     //ship is 1/32 of the screen
-    private int distanceTraveled;
+    private double distanceTraveled;
     private int laserBatterAmmo;
+    private int rechargeRate;//divide by 60 to get seconds
     private  Dimension dimension;
     protected int size;
     private boolean moveLeft;
     private boolean moveRight;
+    private static double travelSpeed;
+    private double xSpeed;
 
 
     public EscapeShip(Dimension dimension){
-        distanceTraveled = 0;
-        laserBatterAmmo = 5;
         size = 12;
 
-        System.out.println("EscapeShip Contructor");
-
         this.dimension = dimension;
+
+        startingPosition();
+    }
+
+    protected void startingPosition(){
+        travelSpeed = 1;
+        distanceTraveled = 0;
+        laserBatterAmmo = 5;
+        rechargeRate = 90;
 
         yCoordinate = dimension.getHeight() * 14.5/16;
         xCoordinate = (dimension.getWidth() / 2) - size/2;
@@ -30,9 +38,22 @@ public class EscapeShip extends GameObjects {
     }
 
     public Laser[] fireLaser(){
+
         Laser leftLaser = new Laser(xCoordinate, yCoordinate, LEFT, dimension);
         Laser rightLaser = new Laser(xCoordinate, yCoordinate, RIGHT, dimension);
+        laserBatterAmmo--;
         return new Laser[]{leftLaser.returnLaser(),rightLaser.returnLaser()};
+    }
+
+    public boolean canFire(){
+        if(laserBatterAmmo>0)
+            return true;
+        else
+            return false;
+    }
+
+    public int getLaserBatterAmmo(){
+        return laserBatterAmmo;
     }
 
     protected void move(boolean isMoving, int leftOrRight) {
@@ -61,25 +82,48 @@ public class EscapeShip extends GameObjects {
 
     @Override
     public void update() {
-        distanceTraveled++;
+        //move
+        distanceTraveled += travelSpeed;
         if(moveLeft == true && moveRight == true){//both keys true, don't move
             xSpeed = 0;
         }
         else if(moveLeft == true && moveRight == false){//move left
-            xSpeed = -1.5;
+            xSpeed = -1.75;
         }
         else if(moveRight == true && moveLeft == false){//move right
-            xSpeed = 1.5;
+            xSpeed = 1.75;
         }
         else{//both keys false, don't move
             xSpeed = 0;
         }
         xCoordinate += xSpeed;
+
+        //charge laser batteries
+        if(laserBatterAmmo != 5){
+            rechargeRate--;
+            if(rechargeRate==0){
+                rechargeRate = 120;
+                laserBatterAmmo++;
+            }
+        }
     }
 
-    @Override
-    public void updateSpeed(int speedIncrease) {
+    public String writeDistanceTraveled(){
+        return("Distance: " +(int)distanceTraveled);
+    }
 
+    public int getRechargeRate(){
+        return rechargeRate;
+    }
+
+    public double getDistanceTraveled(){
+        return distanceTraveled;
+    }
+
+    public static void updateSpeed(double speedIncrease) {
+        if(travelSpeed < 1.5){
+            travelSpeed *= speedIncrease;
+        }
     }
 
 }
