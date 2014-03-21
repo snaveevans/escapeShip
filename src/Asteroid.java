@@ -14,6 +14,16 @@ public class Asteroid extends GameObjects {
     private double xSpeed;
     private double ySpeed;
 
+    /*-----------------------------MAJOR REWORK-------------------------------------
+                        Rework Asteroid
+                    * Change actual shape of asteroid
+                        * Asteroids should vary in number of sides not general shape
+                    * Change size between asteroids
+                    * See Collider for reworking as well
+                    * Rotate Asteroid
+                        * Base off of rotating coordinates
+    -------------------------------MAJOR REWORK-----------------------------------*/
+
     public Asteroid(Dimension dimension){
         size = 10;
         Random random = new Random();

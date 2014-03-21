@@ -7,6 +7,13 @@ import java.util.Iterator;
  */
 public class Collider {
 
+    /*-----------------------------MAJOR REWORK-------------------------------------
+                        Rework Asteroid
+                    * Create Coordinate test before line intersect test
+                    * Create Intersect Test
+                    * Asteroid Bounce??
+    -------------------------------MAJOR REWORK-----------------------------------*/
+
     public static boolean remover(ArrayList<Asteroid> asteroidList, ArrayList<Laser> laserList, EscapeShip escapeShip,Dimension dimension){
 
         //check lasers vs asteroids

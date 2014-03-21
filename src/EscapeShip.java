@@ -18,6 +18,11 @@ public class EscapeShip extends GameObjects {
     private static double speed;
     private double xSpeed;
 
+    /*-----------------------------MAJOR REWORK-------------------------------------
+                        Rework EscapeShip
+                    * Create shape of EscapeShip
+                    * Ensure boundaries are not surpassed by ship
+    -------------------------------MAJOR REWORK-----------------------------------*/
 
     public EscapeShip(Dimension dimension){
         size = 12;
@@ -87,18 +92,15 @@ public class EscapeShip extends GameObjects {
     public void update() {
         //move
         distanceTraveled += travelSpeed;
-        if(moveLeft == true && moveRight == true){//both keys true, don't move
+
+        if(moveLeft && moveRight)//both keys true, don't move
             xSpeed = 0;
-        }
-        else if(moveLeft == true && moveRight == false){//move left
+        else if(moveLeft && !moveRight && xCoordinate > 9)//move left
             xSpeed = -speed;
-        }
-        else if(moveRight == true && moveLeft == false){//move right
+        else if(moveRight && !moveLeft && xCoordinate < dimension.getWidth()-15)//move right
             xSpeed = speed;
-        }
-        else{//both keys false, don't move
+        else//both keys false, don't move
             xSpeed = 0;
-        }
         xCoordinate += xSpeed;
 
         //charge laser batteries
