@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.util.Random;
 
 /**
  * Created by tyler_000 on 3/18/14.
@@ -6,35 +7,35 @@ import java.awt.*;
 public class Asteroid extends GameObjects {
 
     protected int size;
-    static private double speedMinX = .05;
-    static private double speedMinY = .8;
-
-    static private double speedMaxX = .25;
-    static private double speedMaxY = 1.2;
 
     static private double speedModifier = 1;
+    static private final int SECTOCROSS = 3;//seconds to cross the screen
 
     private double xSpeed;
     private double ySpeed;
 
     public Asteroid(Dimension dimension){
-        xCoordinate = (Math.random()*((dimension.getWidth()/2-0)+ dimension.getWidth()/2));
-        yCoordinate = 1;
-
         size = 10;
+        Random random = new Random();
+        int topRandX = random.nextInt((int)dimension.getWidth()+20)-9;
+        int botRandX = random.nextInt((int)dimension.getWidth())-1;
 
-        ySpeed = (speedMinY+(Math.random()*((speedMaxY-speedMinY)+1)));
+        xCoordinate = topRandX;
+        yCoordinate = -10;
 
-        xSpeed = (speedMinX+(Math.random()*((speedMaxX-speedMinX)+1)));
+        xSpeed = (double)(botRandX - topRandX)/(double)(GameObjects.UPS*SECTOCROSS);
+        ySpeed = dimension.getHeight()/(double)(GameObjects.UPS*SECTOCROSS);
 
-        if(((int)(Math.random()*10)%2)==1){
-            xSpeed *= -1;
-        }
-        else{
-            xSpeed *= 1;
-        }
+        //System.out.println("TopRand: " + topRandX + " BotRand: " + botRandX);
 
-        ySpeed *= speedModifier;
+        //System.out.println("xSpeed: " + xSpeed + " ySpeed: " + ySpeed);
+
+        double tempModifier = speedModifier + ((double)(random.nextInt(20)-10)/100);
+
+        //System.out.println("TempModifier: " + tempModifier);
+
+        ySpeed *= tempModifier;
+        xSpeed *= tempModifier;
     }
 
     public static void resetSpeedModifier(){

@@ -15,6 +15,7 @@ public class EscapeShip extends GameObjects {
     private boolean moveLeft;
     private boolean moveRight;
     private static double travelSpeed;
+    private static double speed;
     private double xSpeed;
 
 
@@ -28,6 +29,7 @@ public class EscapeShip extends GameObjects {
 
     protected void startingPosition(){
         travelSpeed = 1;
+        speed = 1.75;
         distanceTraveled = 0;
         laserBatterAmmo = 5;
         rechargeRate = RECHARGEMAX;
@@ -89,10 +91,10 @@ public class EscapeShip extends GameObjects {
             xSpeed = 0;
         }
         else if(moveLeft == true && moveRight == false){//move left
-            xSpeed = -1.75;
+            xSpeed = -speed;
         }
         else if(moveRight == true && moveLeft == false){//move right
-            xSpeed = 1.75;
+            xSpeed = speed;
         }
         else{//both keys false, don't move
             xSpeed = 0;
@@ -126,8 +128,11 @@ public class EscapeShip extends GameObjects {
     }
 
     public static void updateSpeed(double speedIncrease) {
-        if(travelSpeed < 1.5){
+        if(travelSpeed < 2){
             travelSpeed *= speedIncrease;
+        }
+        if(speed < 3){
+            speed *= speedIncrease;
         }
     }
 

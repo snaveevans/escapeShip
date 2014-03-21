@@ -16,10 +16,11 @@ public class GameLoop {
     protected ArrayList<Asteroid> asteroidList;
     protected EscapeShip escapeShip;
     private Dimension dimension;
-    private double waitMin = .01;
-    private double waitMax = .04;
+    private double waitMin;
+    private double waitMax;
     private boolean pause;
     private boolean gameOver;
+    private boolean firstTime = true;
 
 
     public GameLoop(Dimension dimension){
@@ -41,14 +42,20 @@ public class GameLoop {
         pause = false;
         Laser.resetSpeedModifier();
         Asteroid.resetSpeedModifier();
+        waitMax = 1.5;
+        waitMin = level;
         pause();
+        //System.out.println("Level: " + level + " WaitMax: "+ waitMax + " WaitMin: " + waitMin + " GameSpeed: " + gameSpeed + " DistanceTillNextLevel: " + distanceTillNextLevel);
+
     }
 
     public void pause(){
         if(!pause && !gameOver)//if it isn't paused, pause it, the game will not continue if it is gameOver
             pause = true;
-        else if(pause && !gameOver)//if it is paused unpause it, the game will not continue if it is gameOver
+        else if(pause && !gameOver) {//if it is paused unpause it, the game will not continue if it is gameOver
             pause = false;
+            firstTime = false;
+        }
     }
 
     public boolean getPause(){
@@ -85,7 +92,7 @@ public class GameLoop {
     }
 
     public void fireLaser(){
-        if(escapeShip.canFire()){
+        if(!pause && escapeShip.canFire()){
             Laser temp[] =escapeShip.fireLaser();
             laserList.add(temp[0]);
             laserList.add(temp[1]);
@@ -94,7 +101,11 @@ public class GameLoop {
 
     private void increaseLevel(){
         level++;
+        waitMax = waitMin/2;
+        waitMin = (1/(double)level)*(1/(double)level);
         gameSpeed = (Math.log(level)/2)+1;
+
+        //System.out.println("Level: " + level + " WaitMax: " + waitMax + " WaitMin: " + waitMin + " GameSpeed: " + gameSpeed + " DistanceTillNextLevel: " + distanceTillNextLevel);
 
         Asteroid.updateSpeed(gameSpeed);
 
@@ -105,18 +116,14 @@ public class GameLoop {
 
     public GameLoop update(){
 
-        /*------------------------------------------------------------------
-                                Rework Asteroid thrower
-                        * Should scale with time
-                        * As level gets higher frequency should increase
-                        * no limit to number of asteroids
-        ------------------------------------------------------------------*/
-
         if(!pause){
-            if(asteroidWait <= 0 && asteroidList.size() < 10+level){//wait around 1-2 and there are already several asteroids
-                asteroidWait = (int)(60*(waitMin+(Math.random()*((waitMax-waitMin)+1))));
+            if(asteroidList.size() < level*Math.sqrt(level)+1){
                 throwAsteroid();
+            }
+            else if(asteroidWait <= 0){
+                asteroidWait = (int)(60*(waitMin+(Math.random()*((waitMax-waitMin)+1))));
                 //System.out.println(asteroidWait);
+                throwAsteroid();
             }
 
             asteroidWait--;
@@ -125,10 +132,10 @@ public class GameLoop {
                 gameOver();
 
             //check to up level
-            if(escapeShip.getDistanceTraveled()-(previousDistanceTillNextLevel) > distanceTillNextLevel){
+            if(escapeShip.getDistanceTraveled() -previousDistanceTillNextLevel > distanceTillNextLevel){
                 previousDistanceTillNextLevel = distanceTillNextLevel;
-                distanceTillNextLevel += 250;
                 increaseLevel();
+                distanceTillNextLevel *= gameSpeed;
             }
 
             escapeShip.update();
@@ -139,6 +146,10 @@ public class GameLoop {
 
     public int getLevel(){
         return level;
+    }
+
+    public boolean getFirstTime(){
+        return firstTime;
     }
 
 }

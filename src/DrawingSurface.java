@@ -14,6 +14,7 @@ public class DrawingSurface extends JPanel{
     private boolean pause;
     private int level;
     private boolean gameOver;
+    private boolean firstTime;
 
     protected void paintComponent(Graphics g){
         //System.out.println("paintComponent");
@@ -48,6 +49,7 @@ public class DrawingSurface extends JPanel{
         pause = gameLoop.getPause();
         level = gameLoop.getLevel();
         gameOver = gameLoop.getGameOver();
+        firstTime = gameLoop.getFirstTime();
     }
 
     private void drawAsteroid(Graphics g, Asteroid asteroid){
@@ -67,7 +69,12 @@ public class DrawingSurface extends JPanel{
 
     private void drawPause(Graphics g){
         g.setColor(Color.black);
-        if(gameOver)
+        if(firstTime) {
+            g.drawString("Welcome!  Use the 'A' & 'D' keys to move", ((int) dimension.getWidth() / 2) - 115, (int) dimension.getHeight() / 2);
+            g.drawString("'Space' to fire, and 'P' to pause/continue", ((int) dimension.getWidth() / 2) - 114, (int) dimension.getHeight() / 2 + 20);
+            g.drawString("Your ammo is displayed in the top right corner",((int)dimension.getWidth()/2)-128,(int) dimension.getHeight() / 2 + 40);
+        }
+        else if(gameOver)
             g.drawString("Game Over: press 'R' to start a new game",((int)dimension.getWidth()/2)-130,(int)dimension.getWidth()/2);
         else
             g.drawString("Paused: Press 'P' to continue or 'R' to Restart",((int)dimension.getWidth()/2)-135,(int)dimension.getWidth()/2);
