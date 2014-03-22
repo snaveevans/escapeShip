@@ -8,30 +8,25 @@ import java.util.ArrayList;
 public class DrawingSurface extends JPanel{
 
     private Dimension dimension;
-    private ArrayList<Asteroid> asteroidList;
-    private ArrayList<Laser> laserList;
-    private EscapeShip escapeShip;
-    private boolean pause;
-    private int level;
-    private boolean gameOver;
-    private boolean firstTime;
+    private GameLoop gameLoop;
+
 
     protected void paintComponent(Graphics g){
         //System.out.println("paintComponent");
         g.setColor(Color.lightGray);
         g.fillRect(0, 0, (int)dimension.getWidth(), (int)dimension.getHeight());
 
-        for(Asteroid asteroidObject: asteroidList){
+        for(Asteroid asteroidObject: gameLoop.asteroidList){
             drawAsteroid(g,asteroidObject);
         }
 
-        for(Laser laserObject: laserList){
+        for(Laser laserObject: gameLoop.laserList){
             drawLaser(g, laserObject);
         }
 
-        drawEscapeShip(g,escapeShip);
+        drawEscapeShip(g,gameLoop.escapeShip);
 
-        if(pause)
+        if(gameLoop.pause)
             drawPause(g);
 
         drawStats(g);
@@ -43,13 +38,7 @@ public class DrawingSurface extends JPanel{
     }
 
     public void change(GameLoop gameLoop){
-        asteroidList = gameLoop.asteroidList;
-        laserList = gameLoop.laserList;
-        escapeShip = gameLoop.escapeShip;
-        pause = gameLoop.getPause();
-        level = gameLoop.getLevel();
-        gameOver = gameLoop.getGameOver();
-        firstTime = gameLoop.getFirstTime();
+        this.gameLoop = gameLoop;
     }
 
     private void drawAsteroid(Graphics g, Asteroid asteroid){
@@ -59,7 +48,7 @@ public class DrawingSurface extends JPanel{
 
     private void drawLaser(Graphics g, Laser laser){
         g.setColor(Color.red);
-        g.drawRect((int)laser.xCoordinate,(int)laser.yCoordinate,1,6);
+        g.drawRect((int)laser.xCoordinate,(int)laser.yCoordinate,1,Laser.SIZE);
     }
 
     private void drawEscapeShip(Graphics g, EscapeShip escapeShip){
@@ -69,12 +58,12 @@ public class DrawingSurface extends JPanel{
 
     private void drawPause(Graphics g){
         g.setColor(Color.black);
-        if(firstTime) {
+        if(gameLoop.firstTime) {
             g.drawString("Welcome!  Use the 'A' & 'D' keys to move", ((int) dimension.getWidth() / 2) - 115, (int) dimension.getHeight() / 2);
             g.drawString("'Space' to fire, and 'P' to pause/continue", ((int) dimension.getWidth() / 2) - 114, (int) dimension.getHeight() / 2 + 20);
             g.drawString("Your ammo is displayed in the top right corner",((int)dimension.getWidth()/2)-128,(int) dimension.getHeight() / 2 + 40);
         }
-        else if(gameOver)
+        else if(gameLoop.gameOver)
             g.drawString("Game Over: press 'R' to start a new game",((int)dimension.getWidth()/2)-130,(int)dimension.getWidth()/2);
         else
             g.drawString("Paused: Press 'P' to continue or 'R' to Restart",((int)dimension.getWidth()/2)-135,(int)dimension.getWidth()/2);
@@ -83,20 +72,20 @@ public class DrawingSurface extends JPanel{
 
     private void drawStats(Graphics g){
         g.setColor(Color.black);
-        g.drawString(escapeShip.writeDistanceTraveled() + " " + writeLevel(), 3, 13);
+        g.drawString(gameLoop.escapeShip.writeDistanceTraveled() + " " + writeLevel() + " Asteroids: " + gameLoop.asteroidsHit, 3, 13);
 
         g.setColor(Color.red);
         int x = 5;
-        for(int i = 0; i < escapeShip.getLaserBatterAmmo();i++){
+        for(int i = 0; i < gameLoop.escapeShip.getLaserBatterAmmo();i++){
             x += 5;
             g.drawRect((int)dimension.getWidth()-x,5,1,7);
         }
-        g.drawRect((int)dimension.getWidth()-9-escapeShip.getRechargeMax()+escapeShip.getRechargeRate(),1,escapeShip.getRechargeMax()-escapeShip.getRechargeRate(),1);
+        g.drawRect((int)dimension.getWidth()-9-gameLoop.escapeShip.getRechargeMax()+gameLoop.escapeShip.getRechargeRate(),1,gameLoop.escapeShip.getRechargeMax()-gameLoop.escapeShip.getRechargeRate(),1);
         //System.out.println(escapeShip.getRechargeRate());
 
     }
 
     private String writeLevel(){
-        return "Level: " + level;
+        return "Level: " + gameLoop.level;
     }
 }

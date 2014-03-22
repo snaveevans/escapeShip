@@ -7,6 +7,8 @@ import java.util.Iterator;
  */
 public class Collider {
 
+    static private int asteroidsHit = 0;
+
     /*-----------------------------MAJOR REWORK-------------------------------------
                         Rework Asteroid
                     * Create Coordinate test before line intersect test
@@ -19,6 +21,7 @@ public class Collider {
         //check lasers vs asteroids
         Iterator<Laser> itL = laserList.iterator();
         while(itL.hasNext()){
+            boolean hitSomething = false;
             Laser laser = itL.next();
             laser.update();
             if(laser.offScreen()){
@@ -28,11 +31,14 @@ public class Collider {
             Iterator<Asteroid> itA = asteroidList.iterator();
             while(itA.hasNext()){
                 Asteroid asteroid = itA.next();
-                if(new Rectangle((int)asteroid.xCoordinate,(int)asteroid.yCoordinate,asteroid.size,asteroid.size).intersects(new Rectangle((int)laser.xCoordinate,(int)laser.yCoordinate,1,5))){
+                if(new Rectangle((int)asteroid.xCoordinate,(int)asteroid.yCoordinate,asteroid.size,asteroid.size).intersects(new Rectangle((int)laser.xCoordinate,(int)laser.yCoordinate,1,Laser.SIZE))){
                     itA.remove();
-                    itL.remove();
+                    hitSomething = true;
+                    asteroidsHit++;
                 }
             }
+            if(hitSomething)
+                itL.remove();
         }
 
         //check asteroids vs escapeShip
@@ -49,5 +55,13 @@ public class Collider {
             }
         }
         return false;
+    }
+
+    public static int asteroidsHit(){
+        return asteroidsHit;
+    }
+
+    public static void resetAsteroidsHid(){
+        asteroidsHit = 0;
     }
 }

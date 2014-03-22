@@ -8,6 +8,8 @@ public class Laser extends GameObjects {
     static private double ySpeed;
     static private double speedModifier = 1;
 
+    static public final int SIZE = 7;
+
     public Laser(double shipX, double shipY, int side, Dimension dimension){
         //laser is +/- 1/64 from the ship
         yCoordinate = shipY - 1; //just 1 pixel above the ship

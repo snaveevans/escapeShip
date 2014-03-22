@@ -58,20 +58,20 @@ public class MainFrame extends JFrame implements Runnable, ActionListener{
 
         @Override
         public void keyPressed(KeyEvent e) {
-            if(e.getKeyCode()==KeyEvent.VK_A){//start moving left
+            if(e.getKeyCode()==KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT){//start moving left
                 gameLoop.moveLeft(true);
             }
-            if(e.getKeyCode()==KeyEvent.VK_D){//start moving right
+            if(e.getKeyCode()==KeyEvent.VK_D || e.getKeyCode()==KeyEvent.VK_RIGHT){//start moving right
                 gameLoop.moveRight(true);
             }
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
-            if(e.getKeyCode()==KeyEvent.VK_A){//stop moving left
+            if(e.getKeyCode()==KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_LEFT){//stop moving left
                 gameLoop.moveLeft(false);
             }
-            if(e.getKeyCode()==KeyEvent.VK_D){//stop moving right
+            if(e.getKeyCode()==KeyEvent.VK_D || e.getKeyCode()==KeyEvent.VK_RIGHT){//stop moving right
                 gameLoop.moveRight(false);
             }
             if(e.getKeyCode()==KeyEvent.VK_SPACE){

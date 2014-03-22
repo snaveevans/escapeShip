@@ -25,22 +25,22 @@ public class Asteroid extends GameObjects {
     -------------------------------MAJOR REWORK-----------------------------------*/
 
     public Asteroid(Dimension dimension){
-        size = 10;
         Random random = new Random();
+        size = random.nextInt(10)+7;
         int topRandX = random.nextInt((int)dimension.getWidth()+20)-9;
         int botRandX = random.nextInt((int)dimension.getWidth())-1;
 
         xCoordinate = topRandX;
         yCoordinate = -10;
 
-        xSpeed = (double)(botRandX - topRandX)/(double)(GameObjects.UPS*SECTOCROSS);
-        ySpeed = dimension.getHeight()/(double)(GameObjects.UPS*SECTOCROSS);
+        xSpeed = (double)(botRandX - topRandX)/(double)(Main.UPS*SECTOCROSS);
+        ySpeed = dimension.getHeight()/(double)(Main.UPS*SECTOCROSS);
 
         //System.out.println("TopRand: " + topRandX + " BotRand: " + botRandX);
 
         //System.out.println("xSpeed: " + xSpeed + " ySpeed: " + ySpeed);
 
-        double tempModifier = speedModifier + ((double)(random.nextInt(20)-10)/100);
+        double tempModifier = speedModifier + ((double)(random.nextInt(30)-15)/100);
 
         //System.out.println("TempModifier: " + tempModifier);
 

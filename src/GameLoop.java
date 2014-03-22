@@ -7,20 +7,24 @@ import java.util.Iterator;
  */
 public class GameLoop {
 
-    private int distanceTillNextLevel;
-    private int previousDistanceTillNextLevel;
-    private int level;
-    private double gameSpeed;
-    private int asteroidWait = 0;
+    protected int level;
     protected ArrayList<Laser> laserList;
     protected ArrayList<Asteroid> asteroidList;
     protected EscapeShip escapeShip;
-    private Dimension dimension;
+    protected boolean pause;
+    protected boolean gameOver;
+    protected boolean firstTime = true;
+    protected int asteroidsHit;
+
+    private int distanceTillNextLevel;
+    private int previousDistanceTillNextLevel;
+    private double gameSpeed;
+    private int asteroidWait = 0;
     private double waitMin;
     private double waitMax;
-    private boolean pause;
-    private boolean gameOver;
-    private boolean firstTime = true;
+    private Dimension dimension;
+
+
 
 
     public GameLoop(Dimension dimension){
@@ -44,6 +48,8 @@ public class GameLoop {
         Asteroid.resetSpeedModifier();
         waitMax = 1.5;
         waitMin = level;
+        Collider.resetAsteroidsHid();
+        asteroidsHit = 0;
         pause();
         //System.out.println("Level: " + level + " WaitMax: "+ waitMax + " WaitMin: " + waitMin + " GameSpeed: " + gameSpeed + " DistanceTillNextLevel: " + distanceTillNextLevel);
 
@@ -121,12 +127,18 @@ public class GameLoop {
                 throwAsteroid();
             }
             else if(asteroidWait <= 0){
-                asteroidWait = (int)(60*(waitMin+(Math.random()*((waitMax-waitMin)+1))));
+                asteroidWait = (int)((Main.UPS/3)*(waitMin+(Math.random()*((waitMax-waitMin)+1))));
                 //System.out.println(asteroidWait);
                 throwAsteroid();
             }
 
+//            if(asteroidList.size() < (Math.sqrt(level)+2)*2){
+//                throwAsteroid();
+//            }
+
             asteroidWait--;
+
+            asteroidsHit = Collider.asteroidsHit();
 
             if(Collider.remover(asteroidList,laserList,escapeShip,dimension))
                 gameOver();

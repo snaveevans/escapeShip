@@ -34,7 +34,7 @@ public class EscapeShip extends GameObjects {
 
     protected void startingPosition(){
         travelSpeed = 1;
-        speed = 1.75;
+        speed = 2;
         distanceTraveled = 0;
         laserBatterAmmo = 5;
         rechargeRate = RECHARGEMAX;
