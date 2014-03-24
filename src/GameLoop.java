@@ -123,7 +123,7 @@ public class GameLoop {
     public GameLoop update(){
 
         if(!pause){
-            if(asteroidList.size() < level*Math.sqrt(level)+1){
+            if(asteroidList.size() < (level*Math.sqrt(level)+6)/2){
                 throwAsteroid();
             }
             else if(asteroidWait <= 0){

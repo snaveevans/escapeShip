@@ -30,8 +30,9 @@ public class Collider {
             //asteroids
             Iterator<Asteroid> itA = asteroidList.iterator();
             while(itA.hasNext()){
-                Asteroid asteroid = itA.next();
-                if(new Rectangle((int)asteroid.xCoordinate,(int)asteroid.yCoordinate,asteroid.size,asteroid.size).intersects(new Rectangle((int)laser.xCoordinate,(int)laser.yCoordinate,1,Laser.SIZE))){
+                final Asteroid asteroid = itA.next();
+//                if(new Rectangle((int)asteroid.xCoordinate-(asteroid.size/2),(int)asteroid.yCoordinate-(asteroid.size/2),asteroid.size,asteroid.size).intersects(new Rectangle((int)laser.xCoordinate,(int)laser.yCoordinate,Laser.XSIZE,Laser.YSIZE))){
+                if(asteroid.gamePolygon.intersects(new Rectangle((int)laser.xCoordinate,(int)laser.yCoordinate,Laser.XSIZE,Laser.YSIZE))){
                     itA.remove();
                     hitSomething = true;
                     asteroidsHit++;
@@ -50,7 +51,8 @@ public class Collider {
                 itA.remove();
             }
             //escapeShip
-            if(new Rectangle((int)asteroid.xCoordinate,(int)asteroid.yCoordinate,asteroid.size,asteroid.size).intersects((int)escapeShip.xCoordinate-escapeShip.size/2,(int)escapeShip.yCoordinate,escapeShip.size,escapeShip.size)){
+//            if(new Rectangle((int)asteroid.xCoordinate-(asteroid.size/2),(int)asteroid.yCoordinate-(asteroid.size/2),asteroid.size,asteroid.size).intersects((int)escapeShip.xCoordinate-escapeShip.size/2,(int)escapeShip.yCoordinate,escapeShip.size,escapeShip.size)){
+            if(GamePolygon.intersects(asteroid,escapeShip)){
                 return true; //game over
             }
         }

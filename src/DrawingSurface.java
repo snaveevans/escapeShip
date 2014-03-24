@@ -43,17 +43,20 @@ public class DrawingSurface extends JPanel{
 
     private void drawAsteroid(Graphics g, Asteroid asteroid){
         g.setColor(Color.black);
-        g.drawRect((int)asteroid.xCoordinate,(int)asteroid.yCoordinate,asteroid.size,asteroid.size);
+        //g.drawRect((int)asteroid.xCoordinate,(int)asteroid.yCoordinate,asteroid.size,asteroid.size);
+        g.drawPolygon(asteroid.gamePolygon);
     }
 
     private void drawLaser(Graphics g, Laser laser){
         g.setColor(Color.red);
-        g.drawRect((int)laser.xCoordinate,(int)laser.yCoordinate,1,Laser.SIZE);
+        //g.drawRect((int)laser.xCoordinate,(int)laser.yCoordinate,Laser.XSIZE,Laser.YSIZE);
+        g.fill3DRect((int)laser.xCoordinate,(int)laser.yCoordinate,Laser.XSIZE,Laser.YSIZE,false);
     }
 
     private void drawEscapeShip(Graphics g, EscapeShip escapeShip){
         g.setColor(Color.blue);
-        g.drawRect((int)escapeShip.xCoordinate-escapeShip.size/2,(int)escapeShip.yCoordinate,escapeShip.size,escapeShip.size);
+        //g.drawRect((int)escapeShip.xCoordinate-escapeShip.size/2,(int)escapeShip.yCoordinate,escapeShip.size,escapeShip.size);
+        g.drawPolygon(escapeShip.gamePolygon);
     }
 
     private void drawPause(Graphics g){

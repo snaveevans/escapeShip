@@ -5,6 +5,7 @@ public abstract class GameObjects  {
     protected double xCoordinate, yCoordinate;
     static public final int LEFT = 0;
     static public final int RIGHT = 1;
+    protected GamePolygon gamePolygon;
 
     protected abstract void blowUp();
 
