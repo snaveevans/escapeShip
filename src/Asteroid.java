@@ -22,11 +22,14 @@ public class Asteroid extends GameObjects {
                     * See Collider for reworking as well
                     * Rotate Asteroid
                         * Base off of rotating coordinates
+                    *
+                    * Pretty much done
     -------------------------------MAJOR REWORK-----------------------------------*/
 
     public Asteroid(Dimension dimension){
         Random random = new Random();
-        size = random.nextInt(10)+7;
+        size = random.nextInt(10)+10;
+        size = (int)(dimension.getWidth()/(350/size));
         int topRandX = random.nextInt((int)dimension.getWidth()+20)-9;
         int botRandX = random.nextInt((int)dimension.getWidth())-1;
 

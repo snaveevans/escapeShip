@@ -32,7 +32,7 @@ public class Collider {
             while(itA.hasNext()){
                 final Asteroid asteroid = itA.next();
 //                if(new Rectangle((int)asteroid.xCoordinate-(asteroid.size/2),(int)asteroid.yCoordinate-(asteroid.size/2),asteroid.size,asteroid.size).intersects(new Rectangle((int)laser.xCoordinate,(int)laser.yCoordinate,Laser.XSIZE,Laser.YSIZE))){
-                if(asteroid.gamePolygon.intersects(new Rectangle((int)laser.xCoordinate,(int)laser.yCoordinate,Laser.XSIZE,Laser.YSIZE))){
+                if(asteroid.gamePolygon.intersects(new Rectangle((int)laser.xCoordinate,(int)laser.yCoordinate,Laser.xSize,Laser.ySize))){
                     itA.remove();
                     hitSomething = true;
                     asteroidsHit++;

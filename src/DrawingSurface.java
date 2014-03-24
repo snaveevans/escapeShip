@@ -43,20 +43,18 @@ public class DrawingSurface extends JPanel{
 
     private void drawAsteroid(Graphics g, Asteroid asteroid){
         g.setColor(Color.black);
-        //g.drawRect((int)asteroid.xCoordinate,(int)asteroid.yCoordinate,asteroid.size,asteroid.size);
         g.drawPolygon(asteroid.gamePolygon);
     }
 
     private void drawLaser(Graphics g, Laser laser){
         g.setColor(Color.red);
-        //g.drawRect((int)laser.xCoordinate,(int)laser.yCoordinate,Laser.XSIZE,Laser.YSIZE);
-        g.fill3DRect((int)laser.xCoordinate,(int)laser.yCoordinate,Laser.XSIZE,Laser.YSIZE,false);
+        g.fill3DRect((int)laser.xCoordinate,(int)laser.yCoordinate,Laser.xSize,Laser.ySize,false);
     }
 
     private void drawEscapeShip(Graphics g, EscapeShip escapeShip){
         g.setColor(Color.blue);
-        //g.drawRect((int)escapeShip.xCoordinate-escapeShip.size/2,(int)escapeShip.yCoordinate,escapeShip.size,escapeShip.size);
         g.drawPolygon(escapeShip.gamePolygon);
+        //g.fillPolygon(escapeShip.gamePolygon);
     }
 
     private void drawPause(Graphics g){
@@ -70,7 +68,6 @@ public class DrawingSurface extends JPanel{
             g.drawString("Game Over: press 'R' to start a new game",((int)dimension.getWidth()/2)-130,(int)dimension.getWidth()/2);
         else
             g.drawString("Paused: Press 'P' to continue or 'R' to Restart",((int)dimension.getWidth()/2)-135,(int)dimension.getWidth()/2);
-        //g.drawString("Press 'R' to restart",((int)dimension.getWidth()/2)-40,(int)dimension.getWidth()/2+20);
     }
 
     private void drawStats(Graphics g){
@@ -84,8 +81,6 @@ public class DrawingSurface extends JPanel{
             g.drawRect((int)dimension.getWidth()-x,5,1,7);
         }
         g.drawRect((int)dimension.getWidth()-9-gameLoop.escapeShip.getRechargeMax()+gameLoop.escapeShip.getRechargeRate(),1,gameLoop.escapeShip.getRechargeMax()-gameLoop.escapeShip.getRechargeRate(),1);
-        //System.out.println(escapeShip.getRechargeRate());
-
     }
 
     private String writeLevel(){

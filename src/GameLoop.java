@@ -45,6 +45,7 @@ public class GameLoop {
         asteroidList = new ArrayList<Asteroid>();
         pause = false;
         Laser.resetSpeedModifier();
+        Laser.setSize(dimension);
         Asteroid.resetSpeedModifier();
         waitMax = 1.5;
         waitMin = level;
@@ -123,7 +124,7 @@ public class GameLoop {
     public GameLoop update(){
 
         if(!pause){
-            if(asteroidList.size() < (level*Math.sqrt(level)+6)/2){
+            if(asteroidList.size() < (level*Math.sqrt(level)+4)/2){
                 throwAsteroid();
             }
             else if(asteroidWait <= 0){

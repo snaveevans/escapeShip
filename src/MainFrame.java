@@ -14,8 +14,9 @@ public class MainFrame extends JFrame implements Runnable, ActionListener{
     JFrame frame;
     GameLoop gameLoop;
     DrawingSurface drawingSurface;
-    private int height = 525;
-    private int width = 350;
+    //60
+    private int height = 960;
+    private int width = 540;
     private Dimension dimension = new Dimension(width, height);
 
     public MainFrame(){
