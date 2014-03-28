@@ -16,10 +16,6 @@ public class Asteroid extends GameObjects {
 
     /*-----------------------------MAJOR REWORK-------------------------------------
                         Rework Asteroid
-                    * Change actual shape of asteroid
-                        * Asteroids should vary in number of sides not general shape
-                    * Change size between asteroids
-                    * See Collider for reworking as well
                     * Rotate Asteroid
                         * Base off of rotating coordinates
                     *

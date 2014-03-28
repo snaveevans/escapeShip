@@ -65,10 +65,6 @@ public class GameLoop {
         }
     }
 
-    public boolean getPause(){
-        return pause;
-    }
-
     public void restart(){
         if(pause){//if the game is paused restart it
             start();
@@ -79,10 +75,6 @@ public class GameLoop {
     public void gameOver(){
         gameOver = true;
         pause = true;
-    }
-
-    public boolean getGameOver(){
-        return gameOver;
     }
 
     public void throwAsteroid(){
@@ -156,13 +148,4 @@ public class GameLoop {
 
         return this;
     }
-
-    public int getLevel(){
-        return level;
-    }
-
-    public boolean getFirstTime(){
-        return firstTime;
-    }
-
 }
