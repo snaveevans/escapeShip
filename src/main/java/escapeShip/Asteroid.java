@@ -1,3 +1,5 @@
+package escapeShip;
+
 import java.awt.*;
 import java.util.Random;
 

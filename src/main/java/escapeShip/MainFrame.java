@@ -1,3 +1,5 @@
+package escapeShip;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,7 +13,9 @@ import java.awt.event.ActionListener;
  */
 public class MainFrame extends JFrame implements Runnable, ActionListener{
 
-    JFrame frame;
+    private static final long serialVersionUID = 1L;
+    
+	JFrame frame;
     GameLoop gameLoop;
     DrawingSurface drawingSurface;
     //60

@@ -1,3 +1,5 @@
+package escapeShip;
+
 /**
  * Created by Tyler on 3/11/14.
  */
