@@ -5,7 +5,7 @@ This is a small game I made about 4 years ago,  I recently updated it to use gra
 ### How to play: ###
 
 * Clone or download repo
-* Run using the `./gradle run` for *nix systems or `gradleew.bat` for windows
+* Run using the `./gradlew run` for *nix systems or `gradlew.bat` for windows
 * Have fun!
 
 #### Written by Tyler Evans ####
