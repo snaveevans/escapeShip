@@ -1,0 +1,11 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "escape-ship",
+  "pages_build_output_dir": "src/main/resources/web",
+  "routes": [
+    {
+      "pattern": "escapeship.tylerevans.co",
+      "custom_domain": true
+    }
+  ]
+}
