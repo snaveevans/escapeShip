@@ -1,0 +1,2 @@
+name = "escape-ship"
+pages_build_output_dir = "src/main/resources/web"
