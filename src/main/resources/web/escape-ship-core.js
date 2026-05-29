@@ -316,9 +316,20 @@ function segmentsIntersect(p1, p2, q1, q2) {
   const d2 = direction(q1, q2, p2);
   const d3 = direction(p1, p2, q1);
   const d4 = direction(p1, p2, q2);
-  return (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0)));
+  return (((d1 > 0 && d2 < 0) || (d1 < 0 && d2 > 0)) && ((d3 > 0 && d4 < 0) || (d3 < 0 && d4 > 0)))
+    || (d1 === 0 && onSegment(q1, q2, p1))
+    || (d2 === 0 && onSegment(q1, q2, p2))
+    || (d3 === 0 && onSegment(p1, p2, q1))
+    || (d4 === 0 && onSegment(p1, p2, q2));
 }
 
 function direction(a, b, c) {
   return ((c.x - a.x) * (b.y - a.y)) - ((b.x - a.x) * (c.y - a.y));
+}
+
+function onSegment(a, b, c) {
+  return Math.min(a.x, b.x) <= c.x
+    && c.x <= Math.max(a.x, b.x)
+    && Math.min(a.y, b.y) <= c.y
+    && c.y <= Math.max(a.y, b.y);
 }
