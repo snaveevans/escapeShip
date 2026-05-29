@@ -1,11 +1,39 @@
-# README #
+# Escape Ship
 
-This is a small game I made about 4 years ago,  I recently updated it to use gradle and therefore build better
+Escape Ship is a small Java game. The project is built with Gradle using the
+Gradle wrapper checked into this repository.
 
-### How to play: ###
+## Requirements
 
-* Clone or download repo
-* Run using the `./gradlew run` for *nix systems or `gradlew.bat` for windows
-* Have fun!
+* Java 25 or another JDK supported by the configured Gradle wrapper
+* Gradle wrapper distribution: Gradle 9.5.1
 
-#### Written by Tyler Evans ####
+The project currently compiles Java source and target compatibility as Java 8.
+
+## Build and run
+
+Clone or download the repository, then use the Gradle wrapper from the project
+root:
+
+```sh
+./gradlew run
+```
+
+On Windows, use:
+
+```bat
+gradlew.bat run
+```
+
+To build the project and produce the game jar, run:
+
+```sh
+./gradlew build
+```
+
+The jar artifact is named `escape-ship` and is written to `build/libs/`, for
+example `build/libs/escape-ship-0.1.0.jar`.
+
+## Author
+
+Written by Tyler Evans.
