@@ -88,17 +88,16 @@ including `index.html`, `main.js`, and the supporting browser files.
 ### Cloudflare Pages
 
 The easiest way to make the game public is Cloudflare Pages' Git integration.
-This browser build is already plain static HTML and JavaScript, so Cloudflare
-does not need to run Gradle or install Java to deploy it.
+The browser build uses Vite, so Cloudflare only needs Node.js and npm.
 
 In Cloudflare Pages, connect this repository and use these build settings:
 
 * Framework preset: **None**
-* Build command: leave blank, or use `exit 0`
-* Build output directory: `src/main/resources/web`
+* Build command: `npm run build`
+* Build output directory: `dist`
 
 The same output directory is recorded in `wrangler.json` so Wrangler-based Pages
-deployments use the browser assets directly. The Wrangler config also records
+deployments use the built browser assets directly. The Wrangler config also records
 `escapeship.tylerevans.co` as the production custom-domain route. After the
 first deploy, every push to the production branch gets published automatically,
 and pull requests get preview deployments.
@@ -107,7 +106,7 @@ For a one-off command-line deploy, install or invoke Wrangler and upload the web
 asset directory directly:
 
 ```sh
-npx wrangler pages deploy src/main/resources/web --project-name escape-ship
+npx wrangler pages deploy dist --project-name escape-ship
 ```
 
 If the custom domain is not already attached to the Pages project, add
