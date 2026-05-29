@@ -20,6 +20,13 @@ jar {
 }
 // end::jar[]
 
+tasks.register('webDist', Copy) {
+    description = 'Copies browser-playable web assets into build/web.'
+    group = 'distribution'
+    from 'src/main/resources/web'
+    into layout.buildDirectory.dir('web')
+}
+
 // tag::dependencies[]
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
