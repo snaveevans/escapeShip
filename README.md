@@ -54,6 +54,26 @@ Then open <http://localhost:8000/> in your browser. If your system provides the
 python -m http.server 8000 --directory src/main/resources/web
 ```
 
+For the Vite development workflow, install the npm dependencies once:
+
+```sh
+npm install
+```
+
+Then start the local dev server:
+
+```sh
+npm run dev
+```
+
+Vite prints the local URL in the terminal, usually <http://127.0.0.1:5173/>.
+To build or preview the browser bundle, run:
+
+```sh
+npm run build
+npm run preview
+```
+
 To create a distributable browser asset directory, run:
 
 ```sh

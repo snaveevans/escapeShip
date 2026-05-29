@@ -86,9 +86,7 @@ public final class GameWorld {
 
     public void fireLaser() {
         if (!paused && ship.canFire()) {
-            Laser[] fired = ship.fire();
-            lasers.add(fired[0]);
-            lasers.add(fired[1]);
+            lasers.add(ship.fire());
         }
     }
 
