@@ -65,10 +65,40 @@ including `index.html`, `main.js`, and the supporting browser files.
 
 ## Deployment
 
-For GitHub Pages, publish the generated `build/web/` directory after running
-`./gradlew webDist`. If you prefer GitHub Pages' checked-in folder workflow,
-copy the contents of `build/web/` into a `docs/` directory and configure Pages
-to publish from `docs/`.
+### Cloudflare Pages
+
+The easiest way to make the game public is Cloudflare Pages' Git integration.
+This browser build is already plain static HTML and JavaScript, so Cloudflare
+does not need to run Gradle or install Java to deploy it.
+
+In Cloudflare Pages, connect this repository and use these build settings:
+
+* Framework preset: **None**
+* Build command: leave blank, or use `exit 0`
+* Build output directory: `src/main/resources/web`
+
+The same output directory is recorded in `wrangler.json` so Wrangler-based Pages
+deployments use the browser assets directly. The Wrangler config also records
+`escapeship.tylerevans.co` as the production custom-domain route. After the
+first deploy, every push to the production branch gets published automatically,
+and pull requests get preview deployments.
+
+For a one-off command-line deploy, install or invoke Wrangler and upload the web
+asset directory directly:
+
+```sh
+npx wrangler pages deploy src/main/resources/web --project-name escape-ship
+```
+
+If the custom domain is not already attached to the Pages project, add
+`escapeship.tylerevans.co` under **Workers & Pages > escape-ship > Custom
+domains** in Cloudflare before directing traffic there.
+
+If you prefer to deploy a generated artifact directory instead, run
+`./gradlew webDist` and publish the generated `build/web/` directory. That path
+is also suitable for hosts such as GitHub Pages. If you prefer GitHub Pages'
+checked-in folder workflow, copy the contents of `build/web/` into a `docs/`
+directory and configure Pages to publish from `docs/`.
 
 ## Author
 
