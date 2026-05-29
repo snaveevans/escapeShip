@@ -3,9 +3,11 @@ import { BrowserInput } from './BrowserInput.js';
 import { CanvasRenderer } from './CanvasRenderer.js';
 
 const canvas = document.getElementById('game');
+// Gameplay remains in the canvas element's authored coordinate system;
+// CanvasRenderer maps those virtual units onto the displayed DPR-scaled pixels.
 const virtualSize = {
-  width: canvas.width,
-  height: canvas.height
+  width: Number(canvas.getAttribute('width')),
+  height: Number(canvas.getAttribute('height'))
 };
 const world = new GameWorld(virtualSize);
 const renderer = new CanvasRenderer(canvas, world, {

@@ -32,13 +32,25 @@ export class CanvasRenderer {
   }
 
   syncDisplaySize() {
-    const viewport = globalThis.window || {};
-    const maxWidth = Math.min(this.virtualWidth, (viewport.innerWidth || this.virtualWidth) * 0.95);
-    const maxHeight = Math.min(this.virtualHeight, (viewport.innerHeight || this.virtualHeight) * 0.95);
-    const scale = Math.min(maxWidth / this.virtualWidth, maxHeight / this.virtualHeight);
+    const viewport = this.viewportSize();
+    const scale = Math.min(
+      1,
+      (viewport.width * 0.95) / this.virtualWidth,
+      (viewport.height * 0.95) / this.virtualHeight
+    );
 
-    this.canvas.style.width = `${Math.round(this.virtualWidth * scale)}px`;
-    this.canvas.style.height = `${Math.round(this.virtualHeight * scale)}px`;
+    // Pin the CSS display size to virtual units so changing canvas.width/height
+    // for DPR does not feed back into layout and repeatedly grow the element.
+    this.canvas.style.width = `${this.virtualWidth * scale}px`;
+    this.canvas.style.height = `${this.virtualHeight * scale}px`;
+  }
+
+  viewportSize() {
+    const viewport = globalThis.window || {};
+    return {
+      width: viewport.visualViewport?.width || viewport.innerWidth || this.virtualWidth,
+      height: viewport.visualViewport?.height || viewport.innerHeight || this.virtualHeight
+    };
   }
 
   resizeBackingStoreToDisplaySize() {
@@ -49,10 +61,12 @@ export class CanvasRenderer {
     const displayWidth = Math.max(1, Math.round(width * pixelRatio));
     const displayHeight = Math.max(1, Math.round(height * pixelRatio));
 
-    if (this.canvas.width !== displayWidth || this.canvas.height !== displayHeight) {
+    const resized = this.canvas.width !== displayWidth || this.canvas.height !== displayHeight;
+    if (resized) {
       this.canvas.width = displayWidth;
       this.canvas.height = displayHeight;
     }
+    return resized;
   }
 
   applyVirtualScale() {
@@ -67,10 +81,7 @@ export class CanvasRenderer {
   }
 
   renderIfBackingSizeChanged() {
-    const previousWidth = this.canvas.width;
-    const previousHeight = this.canvas.height;
-    this.resizeBackingStoreToDisplaySize();
-    if (this.canvas.width !== previousWidth || this.canvas.height !== previousHeight) {
+    if (this.resizeBackingStoreToDisplaySize()) {
       this.render();
     }
   }
