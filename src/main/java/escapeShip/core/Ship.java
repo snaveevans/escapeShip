@@ -2,12 +2,11 @@ package escapeShip.core;
 
 public final class Ship {
     private static final double SECONDS_TO_CROSS = 2;
-    private static final int MAX_AMMO = 5;
+    private static final int MAX_AMMO = 10;
 
     private final GameSize gameSize;
     private final int updatesPerSecond;
     private final int rechargeMax;
-    private final int size = 12;
     private double x;
     private double y;
     private double distanceTraveled;
@@ -20,7 +19,7 @@ public final class Ship {
     public Ship(GameSize gameSize, int updatesPerSecond) {
         this.gameSize = gameSize;
         this.updatesPerSecond = updatesPerSecond;
-        this.rechargeMax = (int) (1.5 * updatesPerSecond);
+        this.rechargeMax = (int) (0.75 * updatesPerSecond);
         reset();
     }
 
@@ -32,15 +31,12 @@ public final class Ship {
         laserBatteryAmmo = MAX_AMMO;
         rechargeRate = rechargeMax;
         y = gameSize.getHeight() * 14.8 / 16.0;
-        x = (gameSize.getWidth() / 2.0) - size / 2.0;
+        x = gameSize.getWidth() / 2.0;
     }
 
-    public Laser[] fire() {
+    public Laser fire() {
         laserBatteryAmmo--;
-        return new Laser[] {
-                new Laser(x, y, true, gameSize, updatesPerSecond),
-                new Laser(x, y, false, gameSize, updatesPerSecond)
-        };
+        return new Laser(x, y, gameSize, updatesPerSecond);
     }
 
     public boolean canFire() {
@@ -50,11 +46,12 @@ public final class Ship {
     public void update(InputState input) {
         distanceTraveled += travelSpeed;
         double xSpeed;
+        double halfWidth = gameSize.getWidth() / (350.0 / 6.0);
         if (input.isMovingLeft() && input.isMovingRight()) {
             xSpeed = 0;
-        } else if (input.isMovingLeft() && x > 13) {
+        } else if (input.isMovingLeft() && x > halfWidth) {
             xSpeed = -speed;
-        } else if (input.isMovingRight() && x < gameSize.getWidth() - 21) {
+        } else if (input.isMovingRight() && x < gameSize.getWidth() - halfWidth) {
             xSpeed = speed;
         } else {
             xSpeed = 0;
@@ -81,25 +78,19 @@ public final class Ship {
     }
 
     public PolygonShape getShape() {
+        double halfWidth = gameSize.getWidth() / (350.0 / 6.0);
+        double innerWidth = gameSize.getWidth() / (350.0 / 2.4);
+        double noseHeight = gameSize.getHeight() / (525.0 / 13.0);
+        double lowerShoulder = gameSize.getHeight() / (525.0 / 8.0);
+        double tailHeight = gameSize.getHeight() / (525.0 / 4.5);
+        double tailNotch = gameSize.getHeight() / (525.0 / 5.8);
         return new PolygonShape(new Vec2[] {
-                new Vec2(x, y - gameSize.getHeight() / (525.0 / 2.0)),
-                new Vec2(x + gameSize.getWidth() / (350.0 / 3.0), y - gameSize.getHeight() / (525.0 / 4.0)),
-                new Vec2(x + gameSize.getWidth() / (350.0 / 10.0), y - gameSize.getHeight() / (525.0 / 6.0)),
-                new Vec2(x + gameSize.getWidth() / (350.0 / 10.0), y + gameSize.getHeight() / (525.0 / 5.0)),
-                new Vec2(x + gameSize.getWidth() / (350.0 / 12.0), y + gameSize.getHeight() / (525.0 / 5.0)),
-                new Vec2(x + gameSize.getWidth() / (350.0 / 12.0), y + gameSize.getHeight() / (525.0 / 5.0)),
-                new Vec2(x + gameSize.getWidth() / (350.0 / 10.0), y + gameSize.getHeight() / (525.0 / 5.0)),
-                new Vec2(x + gameSize.getWidth() / (350.0 / 10.0), y + gameSize.getHeight() / (525.0 / 4.0)),
-                new Vec2(x + gameSize.getWidth() / (350.0 / 3.0), y + gameSize.getHeight() / (525.0 / 2.0)),
-                new Vec2(x, y + gameSize.getHeight() / (525.0 / 5.0)),
-                new Vec2(x - gameSize.getWidth() / (350.0 / 3.0), y + gameSize.getHeight() / (525.0 / 2.0)),
-                new Vec2(x - gameSize.getWidth() / (350.0 / 10.0), y + gameSize.getHeight() / (525.0 / 4.0)),
-                new Vec2(x - gameSize.getWidth() / (350.0 / 10.0), y + gameSize.getHeight() / (525.0 / 5.0)),
-                new Vec2(x - gameSize.getWidth() / (350.0 / 12.0), y + gameSize.getHeight() / (525.0 / 5.0)),
-                new Vec2(x - gameSize.getWidth() / (350.0 / 12.0), y + gameSize.getHeight() / (525.0 / 5.0)),
-                new Vec2(x - gameSize.getWidth() / (350.0 / 10.0), y + gameSize.getHeight() / (525.0 / 5.0)),
-                new Vec2(x - gameSize.getWidth() / (350.0 / 10.0), y - gameSize.getHeight() / (525.0 / 6.0)),
-                new Vec2(x - gameSize.getWidth() / (350.0 / 3.0), y - gameSize.getHeight() / (525.0 / 4.0))
+                new Vec2(x, y - noseHeight),
+                new Vec2(x + halfWidth, y + lowerShoulder),
+                new Vec2(x + innerWidth, y + tailNotch),
+                new Vec2(x, y + tailHeight),
+                new Vec2(x - innerWidth, y + tailNotch),
+                new Vec2(x - halfWidth, y + lowerShoulder)
         });
     }
 

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 const source = await readFile(new URL('../src/main/resources/web/escape-ship-core.js', import.meta.url), 'utf8');
-const { PolygonShape } = await import(`data:text/javascript;charset=utf-8,${encodeURIComponent(source)}`);
+const { GameWorld, MAX_AMMO, PolygonShape, Ship } = await import(`data:text/javascript;charset=utf-8,${encodeURIComponent(source)}`);
 
 function polygon(points) {
   return new PolygonShape(points);
@@ -78,6 +78,43 @@ const tests = [
       ]);
       assert.equal(outer.intersects(inner), true);
       assert.equal(inner.intersects(outer), true);
+    }
+  },
+  {
+    name: 'ship fires one laser centered on the ship',
+    run() {
+      const ship = new Ship({ width: 350, height: 525 });
+      const laser = ship.fire();
+      assert.equal(Array.isArray(laser), false);
+      assert.equal(ship.ammo, MAX_AMMO - 1);
+      assert.equal(laser.width, 3);
+      assert.equal(laser.x, ship.x - laser.width / 2);
+    }
+  },
+  {
+    name: 'game world adds one laser per fire action',
+    run() {
+      const world = new GameWorld({ width: 350, height: 525 });
+      world.pause();
+      world.fire();
+      assert.equal(world.lasers.length, 1);
+      assert.equal(world.ship.ammo, MAX_AMMO - 1);
+    }
+  },
+  {
+    name: 'ship carries doubled reserve ammo and recharges twice as fast',
+    run() {
+      const ship = new Ship({ width: 350, height: 525 }, 60);
+      assert.equal(ship.ammo, 10);
+      assert.equal(ship.rechargeMax, 45);
+
+      ship.fire();
+      assert.equal(ship.ammo, 9);
+      for (let i = 0; i < 45; i++) {
+        ship.update({ left: false, right: false });
+      }
+      assert.equal(ship.ammo, 10);
+      assert.equal(ship.rechargeRate, 45);
     }
   }
 ];

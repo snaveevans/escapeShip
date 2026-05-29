@@ -9,12 +9,12 @@ public final class Laser {
     private final double width;
     private final double height;
 
-    public Laser(double shipX, double shipY, boolean left, GameSize size, int updatesPerSecond) {
-        this.y = shipY - 4;
-        this.x = left ? shipX - size.getWidth() / (350.0 / 11.0) : shipX + size.getWidth() / (350.0 / 11.0);
-        this.ySpeed = size.getHeight() / (updatesPerSecond * SECONDS_TO_CROSS);
+    public Laser(double shipX, double shipY, GameSize size, int updatesPerSecond) {
+        this.width = size.getWidth() / (350.0 / 3.0);
         this.height = size.getHeight() / (525.0 / 9.0);
-        this.width = size.getWidth() / (350.0 / 2.0);
+        this.x = shipX - width / 2.0;
+        this.y = shipY - size.getHeight() / (525.0 / 13.0);
+        this.ySpeed = size.getHeight() / (updatesPerSecond * SECONDS_TO_CROSS);
     }
 
     public void update() {

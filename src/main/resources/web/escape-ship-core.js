@@ -1,4 +1,5 @@
 export const DEFAULT_UPDATES_PER_SECOND = 60;
+export const MAX_AMMO = 10;
 
 export class PolygonShape {
   constructor(points) {
@@ -47,7 +48,7 @@ export class Ship {
   constructor(size, updatesPerSecond = DEFAULT_UPDATES_PER_SECOND) {
     this.size = size;
     this.updatesPerSecond = updatesPerSecond;
-    this.rechargeMax = Math.floor(1.5 * updatesPerSecond);
+    this.rechargeMax = Math.floor(0.75 * updatesPerSecond);
     this.reset();
   }
 
@@ -55,26 +56,27 @@ export class Ship {
     this.travelSpeed = 60 / this.updatesPerSecond;
     this.speed = this.size.width / (this.updatesPerSecond * 2);
     this.distance = 0;
-    this.ammo = 5;
+    this.ammo = MAX_AMMO;
     this.rechargeRate = this.rechargeMax;
     this.y = this.size.height * 14.8 / 16;
-    this.x = this.size.width / 2 - 6;
+    this.x = this.size.width / 2;
   }
 
   fire() {
     this.ammo--;
-    return [new Laser(this.x, this.y, true, this.size, this.updatesPerSecond), new Laser(this.x, this.y, false, this.size, this.updatesPerSecond)];
+    return new Laser(this.x, this.y, this.size, this.updatesPerSecond);
   }
 
   update(input) {
     this.distance += this.travelSpeed;
-    if (input.left && !input.right && this.x > 13) {
+    const halfWidth = this.size.width / (350 / 6);
+    if (input.left && !input.right && this.x > halfWidth) {
       this.x -= this.speed;
-    } else if (input.right && !input.left && this.x < this.size.width - 21) {
+    } else if (input.right && !input.left && this.x < this.size.width - halfWidth) {
       this.x += this.speed;
     }
 
-    if (this.ammo !== 5 && --this.rechargeRate === 0) {
+    if (this.ammo !== MAX_AMMO && --this.rechargeRate === 0) {
       this.rechargeRate = this.rechargeMax;
       this.ammo++;
     }
@@ -94,37 +96,31 @@ export class Ship {
     const y = this.y;
     const width = this.size.width;
     const height = this.size.height;
+    const halfWidth = width / (350 / 6);
+    const innerWidth = width / (350 / 2.4);
+    const noseHeight = height / (525 / 13);
+    const lowerShoulder = height / (525 / 8);
+    const tailHeight = height / (525 / 4.5);
+    const tailNotch = height / (525 / 5.8);
     return new PolygonShape([
-      { x, y: y - height / (525 / 2) },
-      { x: x + width / (350 / 3), y: y - height / (525 / 4) },
-      { x: x + width / (350 / 10), y: y - height / (525 / 6) },
-      { x: x + width / (350 / 10), y: y + height / (525 / 5) },
-      { x: x + width / (350 / 12), y: y + height / (525 / 5) },
-      { x: x + width / (350 / 12), y: y + height / (525 / 5) },
-      { x: x + width / (350 / 10), y: y + height / (525 / 5) },
-      { x: x + width / (350 / 10), y: y + height / (525 / 4) },
-      { x: x + width / (350 / 3), y: y + height / (525 / 2) },
-      { x, y: y + height / (525 / 5) },
-      { x: x - width / (350 / 3), y: y + height / (525 / 2) },
-      { x: x - width / (350 / 10), y: y + height / (525 / 4) },
-      { x: x - width / (350 / 10), y: y + height / (525 / 5) },
-      { x: x - width / (350 / 12), y: y + height / (525 / 5) },
-      { x: x - width / (350 / 12), y: y + height / (525 / 5) },
-      { x: x - width / (350 / 10), y: y + height / (525 / 5) },
-      { x: x - width / (350 / 10), y: y - height / (525 / 6) },
-      { x: x - width / (350 / 3), y: y - height / (525 / 4) }
+      { x, y: y - noseHeight },
+      { x: x + halfWidth, y: y + lowerShoulder },
+      { x: x + innerWidth, y: y + tailNotch },
+      { x, y: y + tailHeight },
+      { x: x - innerWidth, y: y + tailNotch },
+      { x: x - halfWidth, y: y + lowerShoulder }
     ]);
   }
 }
 
 export class Laser {
-  constructor(shipX, shipY, left, size, updatesPerSecond = DEFAULT_UPDATES_PER_SECOND) {
+  constructor(shipX, shipY, size, updatesPerSecond = DEFAULT_UPDATES_PER_SECOND) {
     this.size = size;
-    this.y = shipY - 4;
-    this.x = left ? shipX - size.width / (350 / 11) : shipX + size.width / (350 / 11);
-    this.ySpeed = size.height / (updatesPerSecond * 1.75);
-    this.width = size.width / (350 / 2);
+    this.width = size.width / (350 / 3);
     this.height = size.height / (525 / 9);
+    this.x = shipX - this.width / 2;
+    this.y = shipY - size.height / (525 / 13);
+    this.ySpeed = size.height / (updatesPerSecond * 1.75);
   }
 
   update() {
@@ -224,7 +220,7 @@ export class GameWorld {
 
   fire() {
     if (!this.paused && this.ship.ammo > 0) {
-      this.lasers.push(...this.ship.fire());
+      this.lasers.push(this.ship.fire());
     }
   }
 

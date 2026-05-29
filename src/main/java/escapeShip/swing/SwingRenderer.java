@@ -77,7 +77,7 @@ public final class SwingRenderer extends JPanel {
         int height = (int) world.getSize().getHeight();
         if (world.isFirstTime()) {
             graphics.drawString("Welcome!  Use the 'A' & 'D' keys to move", (width / 2) - 115, height / 2);
-            graphics.drawString("'Space' to fire, and 'P' to pause/continue", (width / 2) - 114, height / 2 + 20);
+            graphics.drawString("'Space' to fire one laser, and 'P' to pause/continue", (width / 2) - 150, height / 2 + 20);
             graphics.drawString("Your ammo is displayed in the top right corner", (width / 2) - 128, height / 2 + 40);
         } else if (world.isGameOver()) {
             graphics.drawString("Game Over: press 'R' to start a new game", (width / 2) - 130, width / 2);

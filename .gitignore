@@ -37,6 +37,10 @@ hs_err_pid*
 .gradle
 **/build/
 
+### Node / web build ###
+node_modules/
+dist/
+
 # Ignore Gradle GUI config
 gradle-app.setting
 
