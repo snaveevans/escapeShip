@@ -6,11 +6,26 @@
   <title>Escape Ship</title>
   <style>
     body { background: #222; color: #eee; font-family: sans-serif; text-align: center; }
-    canvas { background: lightgray; max-height: 95vh; max-width: 95vw; }
+    canvas { background: lightgray; max-height: 78vh; max-width: 95vw; touch-action: none; }
+    .controls { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin: 0.75rem auto; max-width: 34rem; }
+    .controls button { background: #444; border: 2px solid #eee; border-radius: 0.5rem; color: #eee; font-size: 1.1rem; min-height: 3rem; min-width: 4.5rem; padding: 0.6rem 1rem; touch-action: none; }
+    .movement-controls { display: flex; gap: 0.75rem; }
+    .action-controls { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
   </style>
 </head>
 <body>
-  <canvas id="game" width="540" height="960"></canvas>
+  <canvas id="game" width="540" height="960" aria-label="Escape Ship game area"></canvas>
+  <nav class="controls" aria-label="Game controls">
+    <div class="movement-controls" aria-label="Movement controls">
+      <button type="button" data-control="left" aria-label="Move left">Left</button>
+      <button type="button" data-control="right" aria-label="Move right">Right</button>
+    </div>
+    <div class="action-controls" aria-label="Action controls">
+      <button type="button" data-control="fire" aria-label="Fire laser">Fire</button>
+      <button type="button" data-control="pause" aria-label="Pause or resume game">Pause</button>
+      <button type="button" data-control="restart" aria-label="Restart game">Restart</button>
+    </div>
+  </nav>
   <script type="module" src="main.js"></script>
 </body>
 </html>

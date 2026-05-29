@@ -32,11 +32,11 @@ export class CanvasRenderer {
   }
 
   syncDisplaySize() {
-    const viewport = this.viewportSize();
+    const displayBounds = this.displayBounds();
     const scale = Math.min(
       1,
-      (viewport.width * 0.95) / this.virtualWidth,
-      (viewport.height * 0.95) / this.virtualHeight
+      displayBounds.width / this.virtualWidth,
+      displayBounds.height / this.virtualHeight
     );
 
     // Pin the CSS display size to virtual units so changing canvas.width/height
@@ -45,12 +45,28 @@ export class CanvasRenderer {
     this.canvas.style.height = `${this.virtualHeight * scale}px`;
   }
 
+  displayBounds() {
+    const viewport = this.viewportSize();
+    const computedStyle = typeof getComputedStyle === 'function'
+      ? getComputedStyle(this.canvas)
+      : null;
+    return {
+      width: this.cssPixels(computedStyle?.maxWidth, viewport.width * 0.95),
+      height: this.cssPixels(computedStyle?.maxHeight, viewport.height * 0.95)
+    };
+  }
+
   viewportSize() {
     const viewport = globalThis.window || {};
     return {
       width: viewport.visualViewport?.width || viewport.innerWidth || this.virtualWidth,
       height: viewport.visualViewport?.height || viewport.innerHeight || this.virtualHeight
     };
+  }
+
+  cssPixels(value, fallback) {
+    const pixels = Number.parseFloat(value);
+    return Number.isFinite(pixels) ? pixels : fallback;
   }
 
   resizeBackingStoreToDisplaySize() {
