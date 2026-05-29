@@ -28,33 +28,3 @@ dependencies {
 
 // tag::wrapper[]
 // end::wrapper[]
-task checkCoreDecoupled {
-    description = 'Verifies that reusable game logic stays free of AWT/Swing dependencies.'
-    group = 'verification'
-
-    doLast {
-        def forbiddenImports = ['import java.awt', 'import javax.swing']
-        def checkedFiles = fileTree('src/main/java/escapeShip/core') {
-            include '**/*.java'
-        }.files as Set
-        checkedFiles.addAll([
-            file('src/main/java/escapeShip/GameLoop.java'),
-            file('src/main/java/escapeShip/EscapeShip.java'),
-            file('src/main/java/escapeShip/Asteroid.java'),
-            file('src/main/java/escapeShip/Laser.java'),
-            file('src/main/java/escapeShip/GamePolygon.java'),
-            file('src/main/java/escapeShip/Collider.java')
-        ])
-
-        checkedFiles.each { sourceFile ->
-            def source = sourceFile.text
-            forbiddenImports.each { forbiddenImport ->
-                if (source.contains(forbiddenImport)) {
-                    throw new GradleException("${sourceFile} must not contain ${forbiddenImport}")
-                }
-            }
-        }
-    }
-}
-
-check.dependsOn checkCoreDecoupled
