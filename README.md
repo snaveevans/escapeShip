@@ -97,7 +97,9 @@ In Cloudflare Pages, connect this repository and use these build settings:
 * Build output directory: `dist`
 
 The same output directory is recorded in `wrangler.json` so Wrangler-based Pages
-deployments use the built browser assets directly. The Wrangler config also records
+deployments use the built browser assets directly. The Wrangler config also includes
+`assets.directory` for Cloudflare deploy flows that run `wrangler deploy` instead
+of `wrangler pages deploy`. The Wrangler config also records
 `escapeship.tylerevans.co` as the production custom-domain route. After the
 first deploy, every push to the production branch gets published automatically,
 and pull requests get preview deployments.
@@ -107,6 +109,13 @@ asset directory directly:
 
 ```sh
 npx wrangler pages deploy dist --project-name escape-ship
+```
+
+If your Cloudflare project runs Wrangler's standard deploy command instead of
+the Pages deploy command, run:
+
+```sh
+npx wrangler deploy
 ```
 
 If the custom domain is not already attached to the Pages project, add
