@@ -67,9 +67,11 @@ function createWorld() {
   return {
     input: { left: false, right: false },
     paused: true,
+    gameOver: false,
     fireCount: 0,
     pauseCount: 0,
     restartCount: 0,
+    restartImmediately: [],
     fire() {
       this.fireCount++;
     },
@@ -77,8 +79,11 @@ function createWorld() {
       this.pauseCount++;
       this.paused = !this.paused;
     },
-    restart() {
+    restart(startImmediately = false) {
       this.restartCount++;
+      this.restartImmediately.push(startImmediately);
+      this.gameOver = false;
+      this.paused = !startImmediately;
     }
   };
 }
@@ -124,67 +129,89 @@ function createHarness(search = '') {
   };
 }
 
-test('left-half drag right sets right input', () => {
+test('left-half press sets left input until release', () => {
   const harness = createHarness();
   try {
     harness.canvas.dispatch('pointerdown', { pointerId: 11, clientX: 50, clientY: 120 });
-    harness.canvas.dispatch('pointermove', { pointerId: 11, clientX: 90, clientY: 120 });
-
-    assert.equal(harness.world.input.left, false);
-    assert.equal(harness.world.input.right, true);
-  } finally {
-    harness.restoreLocation();
-  }
-});
-
-test('left-half drag left sets left input', () => {
-  const harness = createHarness();
-  try {
-    harness.canvas.dispatch('pointerdown', { pointerId: 12, clientX: 90, clientY: 120 });
-    harness.canvas.dispatch('pointermove', { pointerId: 12, clientX: 50, clientY: 120 });
 
     assert.equal(harness.world.input.left, true);
     assert.equal(harness.world.input.right, false);
+    assert.equal(harness.world.fireCount, 0);
+
+    harness.canvas.dispatch('pointerup', { pointerId: 11, clientX: 50, clientY: 120 });
+    assert.equal(harness.world.input.left, false);
+    assert.equal(harness.world.input.right, false);
   } finally {
     harness.restoreLocation();
   }
 });
 
-test('movement deadzone clears both directions', () => {
+test('right-half press sets right input without firing', () => {
+  const harness = createHarness();
+  try {
+    harness.canvas.dispatch('pointerdown', { pointerId: 12, clientX: 170, clientY: 120 });
+
+    assert.equal(harness.world.input.left, false);
+    assert.equal(harness.world.input.right, true);
+    assert.equal(harness.world.fireCount, 0);
+
+    harness.canvas.dispatch('pointerup', { pointerId: 12, clientX: 170, clientY: 120 });
+    assert.equal(harness.world.input.right, false);
+  } finally {
+    harness.restoreLocation();
+  }
+});
+
+test('pressing both halves fires once and holds both directions', () => {
   const harness = createHarness();
   try {
     harness.canvas.dispatch('pointerdown', { pointerId: 13, clientX: 50, clientY: 120 });
-    harness.canvas.dispatch('pointermove', { pointerId: 13, clientX: 90, clientY: 120 });
-    harness.canvas.dispatch('pointermove', { pointerId: 13, clientX: 60, clientY: 120 });
+    harness.canvas.dispatch('pointerdown', { pointerId: 14, clientX: 170, clientY: 120 });
 
-    assert.equal(harness.world.input.left, false);
-    assert.equal(harness.world.input.right, false);
+    assert.equal(harness.world.input.left, true);
+    assert.equal(harness.world.input.right, true);
+    assert.equal(harness.world.fireCount, 1);
+
+    harness.canvas.dispatch('pointermove', { pointerId: 14, clientX: 175, clientY: 120 });
+    assert.equal(harness.world.fireCount, 1);
   } finally {
     harness.restoreLocation();
   }
 });
 
-test('movement crossing into right half neutralizes steering without firing', () => {
+test('both-half fire chord can repeat after release', () => {
+  const harness = createHarness();
+  try {
+    harness.canvas.dispatch('pointerdown', { pointerId: 15, clientX: 50, clientY: 120 });
+    harness.canvas.dispatch('pointerdown', { pointerId: 16, clientX: 170, clientY: 120 });
+    harness.canvas.dispatch('pointerup', { pointerId: 16, clientX: 170, clientY: 120 });
+    harness.canvas.dispatch('pointerdown', { pointerId: 17, clientX: 170, clientY: 120 });
+
+    assert.equal(harness.world.fireCount, 2);
+  } finally {
+    harness.restoreLocation();
+  }
+});
+
+test('single pointer moving between halves changes direction without firing', () => {
   const harness = createHarness();
   try {
     harness.canvas.dispatch('pointerdown', { pointerId: 18, clientX: 50, clientY: 120 });
-    harness.canvas.dispatch('pointermove', { pointerId: 18, clientX: 90, clientY: 120 });
-    harness.canvas.dispatch('pointermove', { pointerId: 18, clientX: 130, clientY: 120 });
+    harness.canvas.dispatch('pointermove', { pointerId: 18, clientX: 170, clientY: 120 });
 
     assert.equal(harness.world.input.left, false);
-    assert.equal(harness.world.input.right, false);
+    assert.equal(harness.world.input.right, true);
     assert.equal(harness.world.fireCount, 0);
   } finally {
     harness.restoreLocation();
   }
 });
 
-test('movement release and leave clear input', () => {
+test('canvas pointer release and leave clear input', () => {
   const releaseHarness = createHarness();
   try {
-    releaseHarness.canvas.dispatch('pointerdown', { pointerId: 14, clientX: 50, clientY: 120 });
-    releaseHarness.canvas.dispatch('pointermove', { pointerId: 14, clientX: 90, clientY: 120 });
-    releaseHarness.canvas.dispatch('pointerup', { pointerId: 14, clientX: 90, clientY: 120 });
+    releaseHarness.canvas.dispatch('pointerdown', { pointerId: 19, clientX: 50, clientY: 120 });
+    releaseHarness.canvas.dispatch('pointerup', { pointerId: 19, clientX: 50, clientY: 120 });
 
     assert.equal(releaseHarness.world.input.left, false);
     assert.equal(releaseHarness.world.input.right, false);
@@ -194,9 +221,8 @@ test('movement release and leave clear input', () => {
 
   const leaveHarness = createHarness();
   try {
-    leaveHarness.canvas.dispatch('pointerdown', { pointerId: 15, clientX: 90, clientY: 120 });
-    leaveHarness.canvas.dispatch('pointermove', { pointerId: 15, clientX: 50, clientY: 120 });
-    leaveHarness.canvas.dispatch('pointerleave', { pointerId: 15, clientX: 50, clientY: 120 });
+    leaveHarness.canvas.dispatch('pointerdown', { pointerId: 20, clientX: 170, clientY: 120 });
+    leaveHarness.canvas.dispatch('pointerleave', { pointerId: 20, clientX: 170, clientY: 120 });
 
     assert.equal(leaveHarness.world.input.left, false);
     assert.equal(leaveHarness.world.input.right, false);
@@ -205,33 +231,19 @@ test('movement release and leave clear input', () => {
   }
 });
 
-test('right-half press fires exactly once', () => {
-  const harness = createHarness();
-  try {
-    harness.canvas.dispatch('pointerdown', { pointerId: 16, clientX: 170, clientY: 120 });
-    harness.canvas.dispatch('pointerup', { pointerId: 16, clientX: 170, clientY: 120 });
-
-    assert.equal(harness.world.fireCount, 1);
-    assert.equal(harness.world.input.left, false);
-    assert.equal(harness.world.input.right, false);
-  } finally {
-    harness.restoreLocation();
-  }
-});
-
-test('movement pointer and fire pointer do not interfere', () => {
+test('releasing one pointer during a fire chord keeps the other side active', () => {
   const harness = createHarness();
   try {
     harness.canvas.dispatch('pointerdown', { pointerId: 21, clientX: 50, clientY: 120 });
-    harness.canvas.dispatch('pointermove', { pointerId: 21, clientX: 90, clientY: 120 });
     harness.canvas.dispatch('pointerdown', { pointerId: 22, clientX: 170, clientY: 120 });
     harness.canvas.dispatch('pointerup', { pointerId: 22, clientX: 170, clientY: 120 });
 
     assert.equal(harness.world.fireCount, 1);
-    assert.equal(harness.world.input.right, true);
-
-    harness.canvas.dispatch('pointerup', { pointerId: 21, clientX: 90, clientY: 120 });
+    assert.equal(harness.world.input.left, true);
     assert.equal(harness.world.input.right, false);
+
+    harness.canvas.dispatch('pointerup', { pointerId: 21, clientX: 50, clientY: 120 });
+    assert.equal(harness.world.input.left, false);
   } finally {
     harness.restoreLocation();
   }
@@ -262,6 +274,43 @@ test('all pause controls stay labeled and bound', () => {
 
     assert.equal(harness.world.pauseCount, 1);
     assert.deepEqual(harness.pauseButtons.map(button => button.textContent), ['Pause', 'Pause']);
+  } finally {
+    harness.restoreLocation();
+  }
+});
+
+test('game-over primary controls relabel to restart and immediately start a new game', () => {
+  const harness = createHarness('?debugControls=1');
+  try {
+    harness.world.gameOver = true;
+    harness.world.paused = true;
+    harness.input.syncControlLabels();
+
+    assert.deepEqual(harness.pauseButtons.map(button => button.textContent), ['Restart', 'Restart']);
+
+    harness.pauseButtons[0].dispatch('pointerdown', { pointerId: 42 });
+
+    assert.equal(harness.world.restartCount, 1);
+    assert.deepEqual(harness.world.restartImmediately, [true]);
+    assert.equal(harness.world.gameOver, false);
+    assert.equal(harness.world.paused, false);
+    assert.deepEqual(harness.pauseButtons.map(button => button.textContent), ['Pause', 'Pause']);
+  } finally {
+    harness.restoreLocation();
+  }
+});
+
+test('keyboard restart immediately starts after game over', () => {
+  const harness = createHarness();
+  try {
+    harness.world.gameOver = true;
+    harness.world.paused = true;
+
+    harness.target.dispatch('keyup', { key: 'r' });
+
+    assert.equal(harness.world.restartCount, 1);
+    assert.deepEqual(harness.world.restartImmediately, [true]);
+    assert.equal(harness.world.paused, false);
   } finally {
     harness.restoreLocation();
   }

@@ -212,9 +212,12 @@ export class GameWorld {
     }
   }
 
-  restart() {
+  restart(startImmediately = false) {
     if (this.paused) {
       this.start();
+      if (startImmediately) {
+        this.pause();
+      }
     }
   }
 

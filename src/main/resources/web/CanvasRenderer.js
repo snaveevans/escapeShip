@@ -187,8 +187,8 @@ export class CanvasRenderer {
     context.fillStyle = 'black';
     context.textAlign = 'center';
     const message = this.world.firstTime
-      ? 'Welcome! Drag left side to steer, tap right side to fire'
-      : (this.world.gameOver ? 'Game Over: press R or debug Restart' : 'Paused: use Resume or press P');
+      ? 'Welcome! Hold left side to move left, right side to move right, both sides to fire'
+      : (this.world.gameOver ? 'Game Over: use Restart or press R' : 'Paused: use Resume or press P');
     const lines = this.wrapText(message, hud.width - (hud.margin * 2));
     const lineHeight = fontSize * 1.25;
     const startY = hud.height / 2 - ((lines.length - 1) * lineHeight) / 2;
