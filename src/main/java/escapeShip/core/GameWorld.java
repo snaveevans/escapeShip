@@ -66,8 +66,15 @@ public final class GameWorld {
     }
 
     public void restart() {
+        restart(false);
+    }
+
+    public void restart(boolean startImmediately) {
         if (paused) {
             start();
+            if (startImmediately) {
+                pause();
+            }
         }
     }
 

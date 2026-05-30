@@ -102,6 +102,21 @@ const tests = [
     }
   },
   {
+    name: 'game world can restart into active play',
+    run() {
+      const world = new GameWorld({ width: 350, height: 525 });
+      world.pause();
+      world.gameOver = true;
+      world.paused = true;
+
+      world.restart(true);
+
+      assert.equal(world.gameOver, false);
+      assert.equal(world.paused, false);
+      assert.equal(world.firstTime, false);
+    }
+  },
+  {
     name: 'ship carries doubled reserve ammo and recharges twice as fast',
     run() {
       const ship = new Ship({ width: 350, height: 525 }, 60);

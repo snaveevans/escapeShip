@@ -1,10 +1,10 @@
 const GAMEPLAY_KEYS = new Set(['a', 'd', 'arrowleft', 'arrowright', 'p', 'r']);
-const MOVEMENT_DEADZONE_PX = 24;
 
 export class BrowserInput {
   constructor(world, target = window, root = globalThis.document, canvas = null) {
     this.world = world;
-    this.movementPointer = null;
+    this.canvasPointers = new Map();
+    this.fireChordActive = false;
     this.canvas = canvas || root?.querySelector?.('#game') || null;
 
     target.addEventListener('keydown', event => this.keyDown(event));
@@ -50,7 +50,7 @@ export class BrowserInput {
       this.syncControlLabels();
     }
     if (key === 'r') {
-      this.world.restart();
+      this.restartGame(this.world.gameOver);
       this.syncControlLabels();
     }
   }
@@ -67,12 +67,9 @@ export class BrowserInput {
     this.bindHoldControl(root.querySelector('[data-control="left"]'), 'left');
     this.bindHoldControl(root.querySelector('[data-control="right"]'), 'right');
     this.bindActionControls(root.querySelectorAll('[data-control="fire"]'), () => this.world.fire());
-    this.bindActionControls(root.querySelectorAll('[data-control="pause"]'), () => {
-      this.world.pause();
-      this.syncControlLabels();
-    });
+    this.bindActionControls(root.querySelectorAll('[data-control="pause"]'), () => this.activatePrimaryControl());
     this.bindActionControls(root.querySelectorAll('[data-control="restart"]'), () => {
-      this.world.restart();
+      this.restartGame(false);
       this.syncControlLabels();
     });
     this.configureDebugControls(root);
@@ -106,46 +103,37 @@ export class BrowserInput {
     }
 
     event.preventDefault();
-    const point = this.canvasPoint(event);
-    if (point.x < point.width / 2) {
-      if (this.movementPointer === null) {
-        this.movementPointer = {
-          id: event.pointerId,
-          startX: point.x
-        };
-        this.updateMovementFromPoint(point);
-        this.capturePointer(event);
-      }
-      return;
-    }
-
-    this.world.fire();
+    this.canvasPointers.set(event.pointerId, this.sideForPoint(this.canvasPoint(event)));
+    this.syncCanvasInput();
     this.capturePointer(event);
   }
 
   canvasPointerMove(event) {
-    if (!this.isMovementPointer(event)) {
+    if (!this.canvasPointers.has(event.pointerId)) {
       return;
     }
 
     event.preventDefault();
-    this.updateMovementFromPoint(this.canvasPoint(event));
+    this.canvasPointers.set(event.pointerId, this.sideForPoint(this.canvasPoint(event)));
+    this.syncCanvasInput();
   }
 
   canvasPointerEnd(event) {
-    if (this.isMovementPointer(event)) {
+    if (this.canvasPointers.has(event.pointerId)) {
       event.preventDefault();
-      this.clearMovementPointer();
+      this.canvasPointers.delete(event.pointerId);
+      this.syncCanvasInput();
     }
   }
 
   canvasPointerLeave(event) {
-    if (!this.isMovementPointer(event)) {
+    if (!this.canvasPointers.has(event.pointerId)) {
       return;
     }
 
     event.preventDefault();
-    this.clearMovementPointer();
+    this.canvasPointers.delete(event.pointerId);
+    this.syncCanvasInput();
   }
 
   canvasPoint(event) {
@@ -158,25 +146,27 @@ export class BrowserInput {
     };
   }
 
-  updateMovementFromPoint(point) {
-    if (this.movementPointer === null) {
-      return;
+  sideForPoint(point) {
+    return point.x < point.width / 2 ? 'left' : 'right';
+  }
+
+  syncCanvasInput() {
+    let hasLeft = false;
+    let hasRight = false;
+
+    for (const side of this.canvasPointers.values()) {
+      hasLeft ||= side === 'left';
+      hasRight ||= side === 'right';
     }
 
-    const deltaX = point.x - this.movementPointer.startX;
-    const insideMovementSide = point.x < point.width / 2;
-    this.world.input.left = insideMovementSide && deltaX < -MOVEMENT_DEADZONE_PX;
-    this.world.input.right = insideMovementSide && deltaX > MOVEMENT_DEADZONE_PX;
-  }
+    this.world.input.left = hasLeft;
+    this.world.input.right = hasRight;
 
-  isMovementPointer(event) {
-    return this.movementPointer?.id === event.pointerId;
-  }
-
-  clearMovementPointer() {
-    this.world.input.left = false;
-    this.world.input.right = false;
-    this.movementPointer = null;
+    const fireChordPressed = hasLeft && hasRight;
+    if (fireChordPressed && !this.fireChordActive) {
+      this.world.fire();
+    }
+    this.fireChordActive = fireChordPressed;
   }
 
   capturePointer(event) {
@@ -228,13 +218,26 @@ export class BrowserInput {
     });
   }
 
+  activatePrimaryControl() {
+    if (this.world.gameOver) {
+      this.restartGame(true);
+    } else {
+      this.world.pause();
+    }
+    this.syncControlLabels();
+  }
+
+  restartGame(startImmediately) {
+    this.world.restart(startImmediately);
+  }
+
   syncControlLabels() {
     if (!this.canvas?.ownerDocument) {
       return;
     }
 
     this.canvas.ownerDocument.querySelectorAll('[data-control="pause"]').forEach(button => {
-      const label = this.world.paused ? 'Resume' : 'Pause';
+      const label = this.world.gameOver ? 'Restart' : (this.world.paused ? 'Resume' : 'Pause');
       button.textContent = label;
       button.setAttribute('aria-label', `${label} game`);
     });
