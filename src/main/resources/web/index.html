@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Escape Ship</title>
   <style>
-    body { background: #222; color: #eee; font-family: sans-serif; text-align: center; }
-    canvas { background: lightgray; max-height: 78vh; max-width: 95vw; touch-action: none; }
+    body { background: #222; color: #eee; font-family: sans-serif; margin: 0; min-height: 100vh; text-align: center; }
+    .game-area { display: inline-block; line-height: 0; margin: 0 auto; max-width: 100vw; position: relative; touch-action: none; vertical-align: top; }
+    canvas { background: lightgray; display: block; max-height: 100vh; max-width: 100vw; touch-action: none; }
+    .pause-control { background: rgba(34, 34, 34, 0.8); border: 2px solid rgba(238, 238, 238, 0.85); border-radius: 0.5rem; color: #eee; font-size: 0.95rem; min-height: 2.5rem; min-width: 5rem; padding: 0.45rem 0.75rem; position: absolute; right: 0.75rem; top: 2.75rem; touch-action: none; }
+    [hidden] { display: none !important; }
     .controls { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; margin: 0.75rem auto; max-width: 34rem; }
     .controls button { background: #444; border: 2px solid #eee; border-radius: 0.5rem; color: #eee; font-size: 1.1rem; min-height: 3rem; min-width: 4.5rem; padding: 0.6rem 1rem; touch-action: none; }
     .movement-controls { display: flex; gap: 0.75rem; }
@@ -14,8 +17,11 @@
   </style>
 </head>
 <body>
-  <canvas id="game" width="540" height="960" aria-label="Escape Ship game area"></canvas>
-  <nav class="controls" aria-label="Game controls">
+  <main class="game-area" aria-label="Escape Ship">
+    <canvas id="game" width="540" height="960" aria-label="Escape Ship game area"></canvas>
+    <button class="pause-control" type="button" data-control="pause" aria-label="Resume game">Resume</button>
+  </main>
+  <nav class="controls" data-debug-controls hidden aria-label="Debug game controls">
     <div class="movement-controls" aria-label="Movement controls">
       <button type="button" data-control="left" aria-label="Move left">Left</button>
       <button type="button" data-control="right" aria-label="Move right">Right</button>
