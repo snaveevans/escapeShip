@@ -14,7 +14,7 @@ const renderer = new CanvasRenderer(canvas, world, {
   virtualWidth: virtualSize.width,
   virtualHeight: virtualSize.height
 });
-new BrowserInput(world);
+const input = new BrowserInput(world, window, document, canvas);
 
 const millisecondsPerUpdate = 1000 / DEFAULT_UPDATES_PER_SECOND;
 const maximumElapsedMilliseconds = 250;
@@ -40,6 +40,7 @@ function animate(timestamp) {
   }
 
   renderer.render();
+  input.syncControlLabels();
   requestAnimationFrame(animate);
 }
 
